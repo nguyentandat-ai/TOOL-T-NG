@@ -410,8 +410,8 @@
 
             <div class="history-log" id="historyLog">
                 <div class="log-item">
-                    <span>Hệ thống VIP PRO đang khởi động...</span>
-                    <span class="log-waiting">VIP PRO</span>
+                    <span>Hệ thống đang khởi động...</span>
+                    <span class="log-waiting"></span>
                 </div>
             </div>
         </div>
@@ -419,7 +419,7 @@
         <!-- ĐIỀU KHIỂN -->
         <div class="control-panel">
             <button id="manualPredictBtn" class="btn btn-primary">
-                <i class="fas fa-bolt"></i> DỰ ĐOÁN 
+                <i class="fas fa-bolt"></i>
             </button>
             <button id="resetBtn" class="btn btn-danger">
                 <i class="fas fa-sync-alt"></i> RESET 
@@ -548,7 +548,7 @@
                 }
                 
             } catch (error) {
-                console.error('Lỗi VIP:', error);
+                console.error('Lỗi:', error);
                 updateVIPStatus('api', 'error');
                 useVIPSampleData();
             }
@@ -604,7 +604,7 @@
             const finalResult = taiPercent > xiuPercent ? 'TAI' : 'XIU';
             const finalConfidence = Math.max(taiPercent, xiuPercent);
             
-            console.log('VIP Analysis:', {
+            console.log('Analysis:', {
                 taiPercent,
                 xiuPercent,
                 finalResult,
