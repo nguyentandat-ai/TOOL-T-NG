@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> TOOL-LC79</title>
+    <title>TOOL LC79.AI </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -74,6 +74,7 @@
         .status-inactive {
             color: var(--text-muted);
         }
+        /* ====== PHẦN THEO DÕI PHIÊN ====== */
         .session-tracker {
             padding: 25px 30px;
             display: grid;
@@ -106,6 +107,7 @@
         .last-session {
             color: var(--success);
         }
+        /* ====== DỰ ĐOÁN CHÍNH ====== */
         .prediction-main {
             padding: 30px;
             text-align: center;
@@ -208,6 +210,7 @@
             font-size: 1.3rem;
             margin-top: 5px;
         }
+        /* ====== LỊCH SỬ DỰ ĐOÁN ====== */
         .prediction-history {
             padding: 0 30px 30px;
         }
@@ -262,6 +265,7 @@
         .log-correct { color: var(--success); }
         .log-incorrect { color: var(--accent); }
         .log-waiting { color: var(--warning); }
+        /* ====== ĐIỀU KHIỂN ====== */
         .control-panel {
             padding: 0 30px 30px;
             display: grid;
@@ -297,6 +301,7 @@
             background: linear-gradient(90deg, #cc0044, var(--accent));
             box-shadow: 0 5px 20px rgba(255, 55, 95, 0.4);
         }
+        /* ====== FOOTER ====== */
         .footer {
             padding: 20px 30px;
             text-align: center;
@@ -324,7 +329,7 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1><i class="fas fa-crown"></i> TAIXIU.AI</h1>
+            <h1><i class="fas fa-satellite"></i> TAIXIU.AI - HỆ THỐNG TỰ ĐỘNG</h1>
             <div class="system-status">
                 <div class="status-item">
                     <i class="fas fa-circle" id="apiStatus"></i>
@@ -361,7 +366,7 @@
         <div class="prediction-main">
             <div class="prediction-header">
                 <div class="pred-label">
-                    <i class="fas fa-brain-circuit"></i> DỰ ĐOÁN 
+                    <i class="fas fa-crystal-ball"></i> DỰ ĐOÁN PHIÊN TIẾP THEO
                 </div>
                 <div class="auto-toggle" id="autoToggle">
                     <div class="toggle-switch" id="toggleSwitch">
@@ -373,7 +378,7 @@
             
             <div id="predictionBox" class="prediction-box waiting">
                 <div id="resultDisplay" class="result-display">---</div>
-                <div id="confidenceDisplay" class="confidence-display">Đang khởi động thuật toán...</div>
+                <div id="confidenceDisplay" class="confidence-display">Đang theo dõi phiên hiện tại...</div>
                 
                 <div class="session-target">
                     <div>ĐANG CHỜ PHIÊN HOÀN TẤT:</div>
@@ -390,7 +395,7 @@
         <!-- LỊCH SỬ DỰ ĐOÁN -->
         <div class="prediction-history">
             <div class="history-title">
-                <i class="fas fa-chart-network"></i> BẢNG THỐNG KÊ
+                <i class="fas fa-history"></i> THỐNG KÊ DỰ ĐOÁN
             </div>
             
             <div class="history-stats">
@@ -404,14 +409,14 @@
                 </div>
                 <div class="stat-box">
                     <div class="stat-value accuracy-stat" id="statAccuracy">0%</div>
-                    <div class="stat-label">ĐỘ CHÍNH XÁC </div>
+                    <div class="stat-label">ĐỘ CHÍNH XÁC</div>
                 </div>
             </div>
 
             <div class="history-log" id="historyLog">
                 <div class="log-item">
                     <span>Hệ thống đang khởi động...</span>
-                    <span class="log-waiting"></span>
+                    <span class="log-waiting">CHỜ</span>
                 </div>
             </div>
         </div>
@@ -419,27 +424,28 @@
         <!-- ĐIỀU KHIỂN -->
         <div class="control-panel">
             <button id="manualPredictBtn" class="btn btn-primary">
-                <i class="fas fa-bolt">NHẤP ĐỂ DỰ ĐOÁN</i>
+                <i class="fas fa-bolt"></i> DỰ ĐOÁN THỦ CÔNG
             </button>
             <button id="resetBtn" class="btn btn-danger">
-                <i class="fas fa-sync-alt"></i> RESET 
+                <i class="fas fa-trash"></i> RESET HỆ THỐNG
             </button>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
-            <div>Hệ thống với thuật toán AI nâng cao | API: wtx.tele68.com</div>
-            <div class="signature">Created by LUKZANMODZ</div>
+            <div>Hệ thống tự động theo dõi và dự đoán phiên tiếp theo | API: wtx.tele68.com</div>
+            <div class="signature">Wormgpt Cường Dev Don't Delete for copyright | Created by LUKZANMODZ</div>
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--warning);">
-                <i class="fas fa-star"></i>EDITION - Thuật toán đã được nâng cấp tối đa
+                <i class="fas fa-info-circle"></i> Hệ thống tự động phát hiện phiên mới và dự đoán
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = 'https://wtx.tele68.com/v1/tx/lite-sessions';
+        // ==================== CẤU HÌNH HỆ THỐNG ====================
+        const API_URL = 'https://wtxmd52.tele68.com/v1/txmd5/sessions';
         
-        // Biến hệ thống VIP
+        // Biến hệ thống
         let systemState = {
             autoMode: false,
             currentSessionId: null,
@@ -449,441 +455,204 @@
             pollInterval: null,
             dataCache: [],
             predictions: [],
-            apiErrorCount: 0,
-            algorithmLevel: ''  
+            apiErrorCount: 0
         };
 
+        // ==================== KHỞI ĐỘNG ====================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('TAIXIU.AI - Hệ thống đang khởi động...');
-            initializeVIPUI();
-            initializeVIPSystem();
-            startVIPPolling();
+            console.log('TAIXIU.AI - Hệ thống tự động đang khởi động...');
+            initializeUI();
+            initializeSystem();
+            startPolling();
         });
 
-        function initializeVIPUI() {
+        // ==================== KHỞI TẠO UI ====================
+        function initializeUI() {
+            // Toggle tự động
             document.getElementById('autoToggle').addEventListener('click', toggleAutoMode);
-            document.getElementById('manualPredictBtn').addEventListener('click', manualVIPPrediction);
-            document.getElementById('resetBtn').addEventListener('click', resetVIPSystem);
-            updateVIPClock();
-            setInterval(updateVIPClock, 1000);
+            
+            // Nút thủ công
+            document.getElementById('manualPredictBtn').addEventListener('click', manualPrediction);
+            
+            // Nút reset
+            document.getElementById('resetBtn').addEventListener('click', resetSystem);
+            
+            // Cập nhật thời gian
+            updateClock();
+            setInterval(updateClock, 1000);
         }
 
-        function updateVIPClock() {
+        function updateClock() {
             const now = new Date();
             const timeStr = now.toLocaleTimeString('vi-VN');
             document.getElementById('predictStatusText').innerHTML = 
-                `<i class="fas fa-clock"></i> ${timeStr} `;
+                `<i class="fas fa-clock"></i> ${timeStr}`;
         }
 
-        function initializeVIPSystem() {
+        // ==================== KHỞI TẠO HỆ THỐNG ====================
+        function initializeSystem() {
+            // Load lịch sử từ localStorage (nếu có)
             const savedPredictions = localStorage.getItem('taixiu_predictions');
             if (savedPredictions) {
                 systemState.predictions = JSON.parse(savedPredictions);
-                updateVIPStatsDisplay();
+                updateStatsDisplay();
             }
-            startVIPPolling();
+            
+            // Bắt đầu polling
+            startPolling();
         }
 
-        // ==================== POLLING VIP PRO ====================
-        function startVIPPolling() {
-            if (systemState.pollInterval) clearInterval(systemState.pollInterval);
+        // ==================== POLLING TỰ ĐỘNG ====================
+        function startPolling() {
+            // Dừng interval cũ nếu có
+            if (systemState.pollInterval) {
+                clearInterval(systemState.pollInterval);
+            }
             
+            // Poll mỗi 10 giây
             systemState.pollInterval = setInterval(async () => {
                 if (systemState.isProcessing) return;
                 
                 try {
                     systemState.isProcessing = true;
-                    await checkNewVIPSession();
+                    await checkNewSession();
                 } catch (error) {
-                    console.error('Error:', error);
-                    updateVIPStatus('api', 'error');
+                    console.error('Lỗi polling:', error);
+                    updateStatus('api', 'error');
                     systemState.apiErrorCount++;
+                    
+                    if (systemState.apiErrorCount > 5) {
+                        showNotification('Lỗi API liên tục. Đang thử lại...', 'error');
+                    }
                 } finally {
                     systemState.isProcessing = false;
                 }
-            }, 3000);
+            }, 10000); // 10 giây
             
-            setTimeout(() => checkNewVIPSession(), 1000);
+            // Poll ngay lập tức lần đầu
+            setTimeout(() => checkNewSession(), 1000);
         }
 
-        async function checkNewVIPSession() {
-            updateVIPStatus('api', 'loading');
+        // ==================== KIỂM TRA PHIÊN MỚI ====================
+        async function checkNewSession() {
+            updateStatus('api', 'loading');
             
             try {
                 const response = await fetch(API_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error('API VIP không phản hồi');
+                if (!response.ok) throw new Error('API không phản hồi');
                 
                 const data = await response.json();
-                updateVIPStatus('api', 'active');
+                updateStatus('api', 'active');
                 systemState.apiErrorCount = 0;
                 
-                if (!data.list || data.list.length === 0) throw new Error('Dữ liệu trống');
+                if (!data.list || data.list.length === 0) {
+                    throw new Error('Dữ liệu API trống');
+                }
                 
+                // Lấy phiên mới nhất
                 const latestSession = data.list[0];
                 const latestSessionId = latestSession.id;
                 
-                // Cập nhật cache với nhiều dữ liệu hơn cho VIP
-                systemState.dataCache = data.list.slice(0, 50);
+                // Cập nhật dữ liệu cache
+                systemState.dataCache = data.list.slice(0, 20);
                 
+                // Kiểm tra xem có phiên mới không
                 if (systemState.lastSessionId === null) {
+                    // Lần đầu khởi động
                     systemState.currentSessionId = latestSessionId;
                     systemState.lastSessionId = latestSessionId;
                     systemState.targetSessionId = latestSessionId + 1;
-                    updateVIPSessionDisplay();
-                    showVIPNotification(`VIP PRO: Đã kết nối. Phiên #${latestSessionId}`, 'success');
-                } else if (latestSessionId > systemState.lastSessionId) {
-                    systemState.lastSessionId = latestSessionId;
-                    checkVIPPredictionResult();
-                    systemState.currentSessionId = latestSessionId;
-                    systemState.targetSessionId = latestSessionId + 1;
-                    updateVIPSessionDisplay();
-                    showVIPNotification(`VIP: Phát hiện phiên mới #${latestSessionId}`, 'info');
                     
+                    updateSessionDisplay();
+                    showNotification(`Đã kết nối API. Phiên hiện tại: #${latestSessionId}`, 'success');
+                    
+                } else if (latestSessionId > systemState.lastSessionId) {
+                    // Có phiên mới!
+                    systemState.lastSessionId = latestSessionId;
+                    
+                    // Kiểm tra xem có cần xác nhận dự đoán trước đó không
+                    checkPredictionResult();
+                    
+                    // Cập nhật phiên hiện tại
+                    systemState.currentSessionId = latestSessionId;
+                    systemState.targetSessionId = latestSessionId + 1;
+                    
+                    updateSessionDisplay();
+                    showNotification(`Đã phát hiện phiên mới: #${latestSessionId}`, 'info');
+                    
+                    // Nếu đang ở chế độ tự động, thực hiện dự đoán
                     if (systemState.autoMode) {
-                        setTimeout(() => performVIPPrediction(), 1500);
+                        setTimeout(() => performPrediction(), 2000);
                     }
+                    
                 } else {
-                    updateVIPSessionDisplay();
-                    updateVIPStatus('predict', 'waiting');
+                    // Chưa có phiên mới, chỉ cập nhật hiển thị
+                    updateSessionDisplay();
+                    updateStatus('predict', 'waiting');
                 }
                 
             } catch (error) {
-                console.error('Lỗi:', error);
-                updateVIPStatus('api', 'error');
-                useVIPSampleData();
+                console.error('Lỗi khi kiểm tra phiên:', error);
+                updateStatus('api', 'error');
+                
+                // Dùng dữ liệu mẫu nếu API lỗi
+                useSampleData();
             }
         }
 
-        function analyzeVIPData(sessions) {
-            if (sessions.length < 5) {
-                return { result: 'TAI', confidence: 50 };
-            }
+        // ==================== KIỂM TRA KẾT QUẢ DỰ ĐOÁN ====================
+        function checkPredictionResult() {
+            if (systemState.predictions.length === 0) return;
             
-            const recentSessions = sessions.slice(0, 15);
-
-            const timeSeriesAnalysis = analyzeTimeSeriesVIP(recentSessions);
-
-            const markovAnalysis = analyzeMarkovChainVIP(recentSessions);
-
-            const pointPatternAnalysis = analyzePointPatternsVIP(recentSessions);
-
-            const trendAnalysis = analyzeLongTermTrendVIP(sessions);
-
-            const cycleAnalysis = detectCyclesVIP(recentSessions);
-
-            const results = [
-                { type: 'time', result: timeSeriesAnalysis.result, weight: 1.5, confidence: timeSeriesAnalysis.confidence },
-                { type: 'markov', result: markovAnalysis.result, weight: 1.3, confidence: markovAnalysis.confidence },
-                { type: 'point', result: pointPatternAnalysis.result, weight: 1.2, confidence: pointPatternAnalysis.confidence },
-                { type: 'trend', result: trendAnalysis.result, weight: 1.0, confidence: trendAnalysis.confidence },
-                { type: 'cycle', result: cycleAnalysis.result, weight: 0.8, confidence: cycleAnalysis.confidence }
-            ];
-
-            let taiScore = 50;
-            let xiuScore = 50;
+            const lastPrediction = systemState.predictions[systemState.predictions.length - 1];
             
-            results.forEach(r => {
-                if (r.result === 'TAI') {
-                    taiScore += (r.confidence - 50) * (r.weight / 5);
-                } else {
-                    xiuScore += (r.confidence - 50) * (r.weight / 5);
-                }
-            });
-
-            const volatility = calculateVolatilityVIP(recentSessions);
-            if (volatility > 0.7) {
-
-                taiScore *= 0.9;
-                xiuScore *= 0.9;
-            }
-
-            const totalScore = taiScore + xiuScore;
-            const taiPercent = Math.max(30, Math.min(90, Math.round((taiScore / totalScore) * 100)));
-            const xiuPercent = 100 - taiPercent;
-            
-            const finalResult = taiPercent > xiuPercent ? 'TAI' : 'XIU';
-            const finalConfidence = Math.max(taiPercent, xiuPercent);
-            
-            console.log('Analysis:', {
-                taiPercent,
-                xiuPercent,
-                finalResult,
-                finalConfidence,
-                analyses: results.map(r => `${r.type}: ${r.result} (${r.confidence}%)`)
-            });
-            
-            return {
-                result: finalResult,
-                confidence: finalConfidence,
-                detailedAnalysis: {
-                    timeSeries: timeSeriesAnalysis,
-                    markov: markovAnalysis,
-                    pointPattern: pointPatternAnalysis,
-                    trend: trendAnalysis,
-                    cycles: cycleAnalysis,
-                    volatility: volatility
-                }
-            };
-        }
-
-        // 1. PHÂN TÍCH CHUỖI THỜI GIAN NÂNG CAO
-        function analyzeTimeSeriesVIP(sessions) {
-            const results = sessions.map(s => s.resultTruyenThong);
-            const points = sessions.map(s => s.point);
-            
-            // Phát hiện xu hướng
-            let trend = 'neutral';
-            const recentResults = results.slice(0, 5);
-            const taiCount = recentResults.filter(r => r === 'TAI').length;
-            const xiuCount = recentResults.length - taiCount;
-            
-            // Phát hiện chuỗi
-            let currentStreak = 1;
-            const currentType = results[0];
-            for (let i = 1; i < results.length; i++) {
-                if (results[i] === currentType) currentStreak++;
-                else break;
-            }
-            
-            // Phát hiện mẫu xen kẽ
-            let alternatingPattern = false;
-            if (results.length >= 4) {
-                alternatingPattern = true;
-                for (let i = 0; i < Math.min(3, results.length - 1); i++) {
-                    if (results[i] === results[i + 1]) {
-                        alternatingPattern = false;
-                        break;
-                    }
+            // Chỉ kiểm tra nếu dự đoán chưa được xác nhận
+            if (lastPrediction.verified === false && lastPrediction.targetSession === systemState.lastSessionId) {
+                // Tìm kết quả thực tế của phiên này
+                const actualSession = systemState.dataCache.find(s => s.id === lastPrediction.targetSession);
+                
+                if (actualSession) {
+                    const actualResult = actualSession.resultTruyenThong;
+                    const isCorrect = lastPrediction.prediction === actualResult;
+                    
+                    // Cập nhật dự đoán
+                    lastPrediction.actual = actualResult;
+                    lastPrediction.correct = isCorrect;
+                    lastPrediction.verified = true;
+                    lastPrediction.verifiedAt = new Date().toISOString();
+                    
+                    // Cập nhật UI
+                    updatePredictionBox(isCorrect ? 'correct' : 'incorrect', 
+                                      lastPrediction.prediction, 
+                                      `${lastPrediction.confidence}% (${isCorrect ? 'ĐÚNG' : 'SAI'})`);
+                    
+                    // Cập nhật thống kê
+                    updateStatsDisplay();
+                    addHistoryLog(lastPrediction);
+                    
+                    // Hiển thị thông báo
+                    showNotification(`Dự đoán cho phiên #${lastPrediction.targetSession}: ${isCorrect ? 'ĐÚNG' : 'SAI'}`, 
+                                   isCorrect ? 'success' : 'error');
+                    
+                    // Lưu vào localStorage
+                    savePredictions();
                 }
             }
-            
-            // Phân tích điểm số
-            const avgPoint = points.slice(0, 5).reduce((a, b) => a + b, 0) / Math.min(5, points.length);
-            
-            // Logic dự đoán nâng cao
-            let result = 'TAI';
-            let confidence = 50;
-            
-            if (currentStreak >= 3) {
-                // Chuỗi dài -> dễ đảo chiều
-                result = currentType === 'TAI' ? 'XIU' : 'TAI';
-                confidence = 55 + Math.min(currentStreak * 5, 30);
-            } else if (alternatingPattern) {
-                // Đang xen kẽ -> dự đoán ngược lại
-                result = results[0] === 'TAI' ? 'XIU' : 'TAI';
-                confidence = 65;
-            } else if (avgPoint > 11) {
-                // Điểm cao -> nghiêng TAI
-                result = 'TAI';
-                confidence = 50 + Math.min((avgPoint - 10.5) * 4, 30);
-            } else if (avgPoint < 10) {
-                // Điểm thấp -> nghiêng XIU
-                result = 'XIU';
-                confidence = 50 + Math.min((10.5 - avgPoint) * 4, 30);
-            } else {
-                // Theo tỷ lệ gần đây
-                result = taiCount > xiuCount ? 'TAI' : 'XIU';
-                confidence = 50 + Math.abs(taiCount - xiuCount) * 8;
-            }
-            
-            return { result, confidence: Math.min(90, confidence) };
         }
 
-        // 2. PHÂN TÍCH MARKOV CHAIN NÂNG CAO
-        function analyzeMarkovChainVIP(sessions) {
-            if (sessions.length < 4) return { result: 'TAI', confidence: 50 };
-            
-            const results = sessions.map(s => s.resultTruyenThong);
-
-            let transitions = {
-                'TAI->TAI': 0, 'TAI->XIU': 0,
-                'XIU->XIU': 0, 'XIU->TAI': 0
-            };
-            
-            for (let i = 1; i < results.length; i++) {
-                const key = `${results[i-1]}->${results[i]}`;
-                if (transitions[key] !== undefined) transitions[key]++;
-            }
-            
-            const currentState = results[0];
-            let taiProb = 50;
-            
-            if (currentState === 'TAI') {
-                const total = transitions['TAI->TAI'] + transitions['TAI->XIU'];
-                taiProb = total > 0 ? Math.round((transitions['TAI->TAI'] / total) * 100) : 50;
-            } else {
-                const total = transitions['XIU->TAI'] + transitions['XIU->XIU'];
-                taiProb = total > 0 ? Math.round((transitions['XIU->TAI'] / total) * 100) : 50;
-            }
-            
-            // Điều chỉnh dựa trên độ ổn định
-            const totalTransitions = Object.values(transitions).reduce((a, b) => a + b, 0);
-            const stability = totalTransitions > 0 ? 
-                Math.max(transitions['TAI->TAI'], transitions['XIU->XIU']) / totalTransitions : 0.5;
-            
-            if (stability > 0.7) {
-                // Hệ thống ổn định -> tăng độ tin cậy
-                taiProb = taiProb > 50 ? Math.min(85, taiProb + 10) : Math.max(15, taiProb - 10);
-            }
-            
-            const result = taiProb > 50 ? 'TAI' : 'XIU';
-            const confidence = Math.max(40, Math.min(90, Math.abs(taiProb - 50) * 2 + 50));
-            
-            return { result, confidence };
-        }
-
-        // 3. PHÂN TÍCH MẪU ĐIỂM SỐ
-        function analyzePointPatternsVIP(sessions) {
-            const points = sessions.map(s => s.point);
-            const recentPoints = points.slice(0, 8);
-            
-            // Tính các chỉ số thống kê
-            const mean = recentPoints.reduce((a, b) => a + b, 0) / recentPoints.length;
-            const variance = recentPoints.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / recentPoints.length;
-            const stdDev = Math.sqrt(variance);
-            
-            // Phát hiện xu hướng điểm
-            let pointTrend = 'stable';
-            if (recentPoints.length >= 3) {
-                const firstHalf = recentPoints.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-                const secondHalf = recentPoints.slice(4).reduce((a, b) => a + b, 0) / 4;
-                pointTrend = secondHalf > firstHalf ? 'increasing' : secondHalf < firstHalf ? 'decreasing' : 'stable';
-            }
-            
-            // Logic dự đoán dựa trên điểm
-            let result = 'TAI';
-            let confidence = 50;
-            
-            if (mean > 11.5) {
-                result = 'TAI';
-                confidence = 50 + Math.min((mean - 10.5) * 6, 35);
-            } else if (mean < 9.5) {
-                result = 'XIU';
-                confidence = 50 + Math.min((10.5 - mean) * 6, 35);
-            } else if (pointTrend === 'increasing' && mean > 10.5) {
-                result = 'TAI';
-                confidence = 65;
-            } else if (pointTrend === 'decreasing' && mean < 10.5) {
-                result = 'XIU';
-                confidence = 65;
-            } else if (stdDev < 2) {
-                // Độ lệch chuẩn thấp -> dễ dự đoán
-                result = mean > 10.5 ? 'TAI' : 'XIU';
-                confidence = 70;
-            } else {
-                // Trường hợp trung tính
-                result = Math() > 0.5 ? 'TAI' : 'XIU';
-                confidence = 55;
-            }
-            
-            return { result, confidence: Math.min(85, confidence) };
-        }
-
-        // 4. PHÂN TÍCH XU HƯỚNG DÀI HẠN
-        function analyzeLongTermTrendVIP(allSessions) {
-            if (allSessions.length < 20) return { result: 'TAI', confidence: 50 };
-            
-            const sampleSize = Math.min(30, allSessions.length);
-            const sample = allSessions.slice(0, sampleSize);
-            
-            const taiCount = sample.filter(s => s.resultTruyenThong === 'TAI').length;
-            const xiuCount = sample.length - taiCount;
-            
-            const taiRate = taiCount / sample.length;
-            const imbalance = Math.abs(taiRate - 0.5);
-            
-            let result = taiRate > 0.5 ? 'TAI' : 'XIU';
-            let confidence = 50;
-            
-            if (imbalance > 0.2) {
-                // Mất cân bằng lớn -> có thể điều chỉnh
-                result = taiRate > 0.5 ? 'XIU' : 'TAI';
-                confidence = 50 + imbalance * 40;
-            } else {
-                // Cân bằng -> dựa trên xu hướng gần đây
-                const recent = sample.slice(0, 10);
-                const recentTai = recent.filter(s => s.resultTruyenThong === 'TAI').length;
-                result = recentTai > 5 ? 'TAI' : 'XIU';
-                confidence = 55;
-            }
-            
-            return { result, confidence: Math.min(80, confidence) };
-        }
-
-        // 5. PHÁT HIỆN CHU KỲ
-        function detectCyclesVIP(sessions) {
-            if (sessions.length < 8) return { result: 'TAI', confidence: 50 };
-            
-            const results = sessions.map(s => s.resultTruyenThong);
-            const points = sessions.map(s => s.point);
-            
-            // Tìm chu kỳ đơn giản (2-4 phiên)
-            let hasCycle = false;
-            let cycleLength = 0;
-            
-            for (let len = 2; len <= 4; len++) {
-                if (results.length >= len * 2) {
-                    const first = results.slice(0, len).join('');
-                    const second = results.slice(len, len * 2).join('');
-                    if (first === second) {
-                        hasCycle = true;
-                        cycleLength = len;
-                        break;
-                    }
-                }
-            }
-            
-            if (hasCycle) {
-                // Dự đoán theo chu kỳ
-                const cycle = results.slice(0, cycleLength);
-                const nextInCycle = cycle[0]; // Vì cycle lặp lại
-                const result = nextInCycle === 'TAI' ? 'XIU' : 'TAI'; // Ngược lại với đầu chu kỳ
-                return { result, confidence: 75 };
-            }
-            
-            // Kiểm tra chu kỳ điểm
-            const recentPoints = points.slice(0, 6);
-            const pointPatterns = [];
-            for (let i = 0; i < recentPoints.length - 2; i++) {
-                const pattern = recentPoints.slice(i, i + 3).map(p => p > 10.5 ? 'H' : 'L').join('');
-                pointPatterns.push(pattern);
-            }
-            
-            // Nếu có mẫu điểm lặp lại
-            if (pointPatterns.length >= 2 && pointPatterns[0] === pointPatterns[1]) {
-                const lastPattern = recentPoints.slice(-3).map(p => p > 10.5 ? 'H' : 'L').join('');
-                const patternType = lastPattern.includes('H') ? 'TAI' : 'XIU';
-                return { result: patternType, confidence: 70 };
-            }
-            
-            return { result: 'TAI', confidence: 50 };
-        }
-
-        // TÍNH ĐỘ BIẾN ĐỘNG
-        function calculateVolatilityVIP(sessions) {
-            if (sessions.length < 3) return 0.5;
-            
-            const results = sessions.map(s => s.resultTruyenThong);
-            let changes = 0;
-            
-            for (let i = 1; i < results.length; i++) {
-                if (results[i] !== results[i-1]) changes++;
-            }
-            
-            return changes / (results.length - 1);
-        }
-
-        // ==================== THỰC HIỆN DỰ ĐOÁN VIP ====================
-        function performVIPPrediction() {
-            if (systemState.dataCache.length < 5) {
-                showVIPNotification('VIP: Cần ít nhất 5 phiên để phân tích', 'warning');
+        // ==================== THỰC HIỆN DỰ ĐOÁN ====================
+        function performPrediction() {
+            if (systemState.dataCache.length < 3) {
+                showNotification('Cần ít nhất 3 phiên để phân tích', 'warning');
                 return;
             }
             
-            updateVIPStatus('predict', 'processing');
+            updateStatus('predict', 'processing');
             
-            const analysis = analyzeVIPData(systemState.dataCache);
+            // Phân tích dữ liệu
+            const analysis = analyzeData(systemState.dataCache);
             
+            // Tạo dự đoán
             const prediction = {
                 id: Date.now(),
                 prediction: analysis.result,
@@ -892,80 +661,140 @@
                 createdAt: new Date().toISOString(),
                 verified: false,
                 actual: null,
-                correct: null,
-                algorithm: systemState.algorithmLevel,
-                detailed: analysis.detailedAnalysis
+                correct: null
             };
             
+            // Thêm vào lịch sử
             systemState.predictions.push(prediction);
-            updateVIPPredictionBox('ready', prediction.prediction, `${prediction.confidence}% (VIP PRO)`);
-            updateVIPSessionDisplay();
-            addVIPHistoryLog(prediction);
-            saveVIPPredictions();
-            showVIPNotification(`VIP: Dự đoán #${prediction.targetSession} - ${prediction.prediction}`, 'info');
-            updateVIPStatus('predict', 'waiting');
+            
+            // Cập nhật UI
+            updatePredictionBox('ready', prediction.prediction, `${prediction.confidence}%`);
+            updateSessionDisplay();
+            
+            // Thêm vào log
+            addHistoryLog(prediction);
+            
+            // Lưu vào localStorage
+            savePredictions();
+            
+            // Hiển thị thông báo
+            showNotification(`Đã dự đoán phiên #${prediction.targetSession}: ${prediction.prediction}`, 'info');
+            
+            // Cập nhật trạng thái
+            updateStatus('predict', 'waiting');
         }
 
-        function checkVIPPredictionResult() {
-            if (systemState.predictions.length === 0) return;
+        // ==================== THUẬT TOÁN PHÂN TÍCH ====================
+        function analyzeData(sessions) {
+            const recent = sessions.slice(0, 10);
             
-            const lastPrediction = systemState.predictions[systemState.predictions.length - 1];
+            // 1. Tính tỷ lệ gần đây
+            const taiCount = recent.filter(s => s.resultTruyenThong === 'TAI').length;
+            const xiuCount = recent.length - taiCount;
+            const taiRatio = taiCount / recent.length;
             
-            if (lastPrediction.verified === false && lastPrediction.targetSession === systemState.lastSessionId) {
-                const actualSession = systemState.dataCache.find(s => s.id === lastPrediction.targetSession);
-                
-                if (actualSession) {
-                    const actualResult = actualSession.resultTruyenThong;
-                    const isCorrect = lastPrediction.prediction === actualResult;
-                    
-                    lastPrediction.actual = actualResult;
-                    lastPrediction.correct = isCorrect;
-                    lastPrediction.verified = true;
-                    lastPrediction.verifiedAt = new Date().toISOString();
-                    
-                    updateVIPPredictionBox(isCorrect ? 'correct' : 'incorrect', 
-                                          lastPrediction.prediction, 
-                                          `${lastPrediction.confidence}% (${isCorrect ? ' ĐÚNG' : ' SAI'})`);
-                    
-                    updateVIPStatsDisplay();
-                    addVIPHistoryLog(lastPrediction);
-                    
-                    showVIPNotification(`VIP #${lastPrediction.targetSession}: ${isCorrect ? 'ĐÚNG' : 'SAI'}`, 
-                                     isCorrect ? 'success' : 'error');
-                    
-                    saveVIPPredictions();
+            // 2. Tính điểm trung bình
+            const avgPoint = recent.reduce((sum, s) => sum + s.point, 0) / recent.length;
+            
+            // 3. Phát hiện chuỗi
+            let currentStreak = 1;
+            const firstResult = recent[0].resultTruyenThong;
+            for (let i = 1; i < recent.length; i++) {
+                if (recent[i].resultTruyenThong === firstResult) {
+                    currentStreak++;
+                } else {
+                    break;
                 }
             }
+            
+            // 4. Tính điểm cho từng bên
+            let taiScore = 50;
+            let xiuScore = 50;
+            
+            // Tỷ lệ gần đây
+            taiScore += (taiRatio - 0.5) * 40;
+            xiuScore += ((1 - taiRatio) - 0.5) * 40;
+            
+            // Điểm trung bình
+            if (avgPoint > 10.5) {
+                taiScore += (avgPoint - 10.5) * 10;
+            } else {
+                xiuScore += (10.5 - avgPoint) * 10;
+            }
+            
+            // Chuỗi hiện tại (nếu có chuỗi dài -> dễ đảo chiều)
+            if (currentStreak >= 2) {
+                if (firstResult === 'TAI') {
+                    xiuScore += currentStreak * 15;
+                } else {
+                    taiScore += currentStreak * 15;
+                }
+            }
+            
+            // 5. Quyết định kết quả
+            const totalScore = taiScore + xiuScore;
+            const taiPercent = Math.round((taiScore / totalScore) * 100);
+            const xiuPercent = 100 - taiPercent;
+            
+            const result = taiPercent > xiuPercent ? 'TAI' : 'XIU';
+            const confidence = Math.max(taiPercent, xiuPercent);
+            
+            return {
+                result: result,
+                confidence: confidence,
+                analysis: {
+                    taiRatio: taiRatio,
+                    avgPoint: avgPoint,
+                    currentStreak: currentStreak,
+                    firstResult: firstResult
+                }
+            };
         }
 
-        function updateVIPSessionDisplay() {
+        // ==================== CẬP NHẬT UI ====================
+        function updateSessionDisplay() {
+            // Phiên đang diễn ra
             document.getElementById('currentSession').textContent = 
                 systemState.currentSessionId ? `#${systemState.currentSessionId}` : '#---';
+            
+            // Phiên mục tiêu (sẽ dự đoán)
             document.getElementById('targetSession').textContent = 
                 systemState.targetSessionId ? `#${systemState.targetSessionId}` : '#---';
+            
+            // Phiên gần nhất
             document.getElementById('lastSession').textContent = 
                 systemState.lastSessionId ? `#${systemState.lastSessionId}` : '#---';
+            
+            // Phiên đang chờ
             document.getElementById('waitingSession').textContent = 
                 systemState.currentSessionId ? `#${systemState.currentSessionId}` : '#---';
+            
+            // Phiên sẽ dự đoán
             document.getElementById('predictionForSession').textContent = 
                 systemState.targetSessionId ? `#${systemState.targetSessionId}` : '#---';
         }
 
-        function updateVIPPredictionBox(state, result, confidence) {
+        function updatePredictionBox(state, result, confidence) {
             const box = document.getElementById('predictionBox');
             const resultEl = document.getElementById('resultDisplay');
             const confidenceEl = document.getElementById('confidenceDisplay');
             
+            // Cập nhật class
             box.className = 'prediction-box ' + state;
+            
+            // Cập nhật nội dung
             resultEl.textContent = result;
             resultEl.className = 'result-display ' + (result === 'TAI' ? 'tai-result' : 'xiu-result');
             confidenceEl.textContent = confidence;
             
+            // Hiệu ứng
             box.style.transform = 'scale(1.05)';
-            setTimeout(() => { box.style.transform = 'scale(1)'; }, 300);
+            setTimeout(() => {
+                box.style.transform = 'scale(1)';
+            }, 300);
         }
 
-        function updateVIPStatsDisplay() {
+        function updateStatsDisplay() {
             const total = systemState.predictions.filter(p => p.verified === true).length;
             const correct = systemState.predictions.filter(p => p.correct === true).length;
             const incorrect = systemState.predictions.filter(p => p.correct === false).length;
@@ -976,12 +805,12 @@
             document.getElementById('statAccuracy').textContent = `${accuracy}%`;
         }
 
-        function addVIPHistoryLog(prediction) {
+        function addHistoryLog(prediction) {
             const logContainer = document.getElementById('historyLog');
             const logItem = document.createElement('div');
             logItem.className = 'log-item';
             
-            let statusText = 'VIP CHỜ';
+            let statusText = 'CHỜ';
             let statusClass = 'log-waiting';
             
             if (prediction.verified === true) {
@@ -990,121 +819,164 @@
             }
             
             logItem.innerHTML = `
-                <span>#${prediction.targetSession}: <strong>${prediction.prediction}</strong> (${prediction.confidence}%)</span>
+                <span>Phiên #${prediction.targetSession}: <strong>${prediction.prediction}</strong> (${prediction.confidence}%)</span>
                 <span class="${statusClass}">${statusText}</span>
             `;
             
+            // Thêm vào đầu
             logContainer.insertBefore(logItem, logContainer.firstChild);
-            if (logContainer.children.length > 10) logContainer.removeChild(logContainer.lastChild);
+            
+            // Giới hạn số lượng log
+            if (logContainer.children.length > 10) {
+                logContainer.removeChild(logContainer.lastChild);
+            }
         }
 
-        function updateVIPStatus(type, status) {
-            const elements = {
-                api: document.getElementById('apiStatus'),
-                auto: document.getElementById('autoStatus'),
-                predict: document.getElementById('predictStatus')
-            };
+        // ==================== QUẢN LÝ TRẠNG THÁI ====================
+        function updateStatus(type, status) {
+            const apiStatus = document.getElementById('apiStatus');
+            const autoStatus = document.getElementById('autoStatus');
+            const predictStatus = document.getElementById('predictStatus');
             
             switch(type) {
                 case 'api':
-                    elements.api.className = status === 'active' ? 'fas fa-circle status-active' :
-                                            status === 'loading' ? 'fas fa-circle status-waiting' :
-                                            'fas fa-circle status-inactive';
+                    apiStatus.className = status === 'active' ? 'fas fa-circle status-active' :
+                                         status === 'loading' ? 'fas fa-circle status-waiting' :
+                                         'fas fa-circle status-inactive';
                     break;
+                    
                 case 'auto':
-                    elements.auto.className = status ? 'fas fa-circle status-active' : 'fas fa-circle status-inactive';
+                    autoStatus.className = status ? 'fas fa-circle status-active' : 'fas fa-circle status-inactive';
                     document.getElementById('autoStatusText').textContent = `Tự động: ${status ? 'BẬT' : 'TẮT'}`;
                     document.getElementById('toggleText').textContent = `TỰ ĐỘNG: ${status ? 'BẬT' : 'TẮT'}`;
                     break;
+                    
                 case 'predict':
-                    elements.predict.className = status === 'processing' ? 'fas fa-circle status-active' :
-                                                status === 'waiting' ? 'fas fa-circle status-waiting' :
-                                                'fas fa-circle status-inactive';
+                    predictStatus.className = status === 'processing' ? 'fas fa-circle status-active' :
+                                             status === 'waiting' ? 'fas fa-circle status-waiting' :
+                                             'fas fa-circle status-inactive';
                     break;
             }
         }
 
         function toggleAutoMode() {
             systemState.autoMode = !systemState.autoMode;
-            updateVIPStatus('auto', systemState.autoMode);
-            document.getElementById('toggleSwitch').classList.toggle('active', systemState.autoMode);
-            showVIPNotification(`VIP: Tự động ${systemState.autoMode ? 'BẬT' : 'TẮT'}`, systemState.autoMode ? 'success' : 'warning');
-            if (systemState.autoMode && systemState.targetSessionId) performVIPPrediction();
+            updateStatus('auto', systemState.autoMode);
+            
+            const toggleSwitch = document.getElementById('toggleSwitch');
+            toggleSwitch.classList.toggle('active', systemState.autoMode);
+            
+            showNotification(`Chế độ tự động: ${systemState.autoMode ? 'BẬT' : 'TẮT'}`, 
+                           systemState.autoMode ? 'success' : 'warning');
+            
+            // Nếu bật tự động và có phiên mục tiêu, thực hiện dự đoán ngay
+            if (systemState.autoMode && systemState.targetSessionId) {
+                performPrediction();
+            }
         }
 
-        function manualVIPPrediction() {
-            if (systemState.dataCache.length < 5) {
-                showVIPNotification('VIP: Không đủ dữ liệu', 'error');
+        // ==================== XỬ LÝ THỦ CÔNG ====================
+        function manualPrediction() {
+            if (systemState.dataCache.length < 3) {
+                showNotification('Không đủ dữ liệu để dự đoán', 'error');
                 return;
             }
-            performVIPPrediction();
+            
+            performPrediction();
         }
 
-        function resetVIPSystem() {
-            if (confirm('RESET hệ thống VIP PRO?')) {
+        // ==================== RESET HỆ THỐNG ====================
+        function resetSystem() {
+            if (confirm('RESET toàn bộ hệ thống? Lịch sử dự đoán sẽ bị xóa.')) {
                 systemState.predictions = [];
                 systemState.currentSessionId = null;
                 systemState.lastSessionId = null;
                 systemState.targetSessionId = null;
-                localStorage.removeItem('taixiu_vip_predictions');
-                updateVIPSessionDisplay();
-                updateVIPStatsDisplay();
+                
+                // Xóa localStorage
+                localStorage.removeItem('taixiu_predictions');
+                
+                // Reset UI
+                updateSessionDisplay();
+                updateStatsDisplay();
                 document.getElementById('historyLog').innerHTML = `
                     <div class="log-item">
-                        <span>Hệ thống đã reset...</span>
-                        <span class="log-waiting">VIP PRO</span>
+                        <span>Hệ thống đã được reset...</span>
+                        <span class="log-waiting">CHỜ</span>
                     </div>
                 `;
-                updateVIPPredictionBox('waiting', '---', 'VIP PRO đang khởi động...');
-                showVIPNotification('VIP: Đã reset hệ thống', 'info');
+                
+                updatePredictionBox('waiting', '---', 'Đang khởi động lại...');
+                showNotification('Đã reset toàn bộ hệ thống', 'info');
             }
         }
 
-        function useVIPSampleData() {
+        // ==================== TIỆN ÍCH ====================
+        function useSampleData() {
+            // Dữ liệu mẫu khi API lỗi
             systemState.dataCache = [
-                {id: 6639162, resultTruyenThong: 'TAI', dices: [6,5,5], point: 16},
-                {id: 6639161, resultTruyenThong: 'XIU', dices: [2,3,2], point: 7},
                 {id: 6639160, resultTruyenThong: 'TAI', dices: [6,4,4], point: 14},
                 {id: 6639159, resultTruyenThong: 'XIU', dices: [1,4,1], point: 6},
-                {id: 6639158, resultTruyenThong: 'XIU', dices: [1,4,5], point: 10}
+                {id: 6639158, resultTruyenThong: 'XIU', dices: [1,4,5], point: 10},
+                {id: 6639157, resultTruyenThong: 'TAI', dices: [6,2,5], point: 13}
             ];
             
             if (!systemState.currentSessionId) {
-                systemState.currentSessionId = 6639162;
-                systemState.lastSessionId = 6639162;
-                systemState.targetSessionId = 6639163;
-                updateVIPSessionDisplay();
+                systemState.currentSessionId = 6639160;
+                systemState.lastSessionId = 6639160;
+                systemState.targetSessionId = 6639161;
+                updateSessionDisplay();
             }
         }
 
-        function showVIPNotification(message, type) {
+        function showNotification(message, type) {
+            // Tạo notification tạm thời
             const notification = document.createElement('div');
             notification.style.cssText = `
-                position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px;
-                color: white; font-weight: bold; z-index: 10000; animation: slideIn 0.5s ease;
-                max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideIn 0.5s ease;
+                max-width: 400px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             `;
             
-            if (type === 'success') notification.style.background = 'linear-gradient(90deg, #00b09b, #96c93d)';
-            else if (type === 'error') notification.style.background = 'linear-gradient(90deg, #ff416c, #ff4b2b)';
-            else if (type === 'warning') notification.style.background = 'linear-gradient(90deg, #f7971e, #ffd200)';
-            else notification.style.background = 'linear-gradient(90deg, #2193b0, #6dd5ed)';
+            if (type === 'success') {
+                notification.style.background = 'linear-gradient(90deg, #00b09b, #96c93d)';
+            } else if (type === 'error') {
+                notification.style.background = 'linear-gradient(90deg, #ff416c, #ff4b2b)';
+            } else if (type === 'warning') {
+                notification.style.background = 'linear-gradient(90deg, #f7971e, #ffd200)';
+            } else {
+                notification.style.background = 'linear-gradient(90deg, #2193b0, #6dd5ed)';
+            }
             
-            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'crown' : 
-                type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'error' ? 'exclamation-circle' : 
+                                  'info-circle'}"></i>
+                ${message}
+            `;
             
             document.body.appendChild(notification);
+            
+            // Tự động xóa sau 5 giây
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.5s ease';
                 setTimeout(() => notification.remove(), 500);
             }, 5000);
         }
 
-        function saveVIPPredictions() {
-            localStorage.setItem('taixiu_vip_predictions', JSON.stringify(systemState.predictions));
+        function savePredictions() {
+            localStorage.setItem('taixiu_predictions', JSON.stringify(systemState.predictions));
         }
 
-        // CSS Animation
+        // Thêm CSS animation
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideIn {
