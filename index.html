@@ -404,7 +404,7 @@
                 </div>
                 <div class="stat-box">
                     <div class="stat-value accuracy-stat" id="statAccuracy">0%</div>
-                    <div class="stat-label">ĐỘ CHÍNH XÁC VIP</div>
+                    <div class="stat-label">ĐỘ CHÍNH XÁC </div>
                 </div>
             </div>
 
@@ -419,7 +419,7 @@
         <!-- ĐIỀU KHIỂN -->
         <div class="control-panel">
             <button id="manualPredictBtn" class="btn btn-primary">
-                <i class="fas fa-bolt"></i>
+                <i class="fas fa-bolt">NHẤP ĐỂ DỰ ĐOÁN</i>
             </button>
             <button id="resetBtn" class="btn btn-danger">
                 <i class="fas fa-sync-alt"></i> RESET 
@@ -925,7 +925,7 @@
                     
                     updateVIPPredictionBox(isCorrect ? 'correct' : 'incorrect', 
                                           lastPrediction.prediction, 
-                                          `${lastPrediction.confidence}% (${isCorrect ? 'VIP ĐÚNG' : 'VIP SAI'})`);
+                                          `${lastPrediction.confidence}% (${isCorrect ? ' ĐÚNG' : ' SAI'})`);
                     
                     updateVIPStatsDisplay();
                     addVIPHistoryLog(lastPrediction);
@@ -985,7 +985,7 @@
             let statusClass = 'log-waiting';
             
             if (prediction.verified === true) {
-                statusText = prediction.correct ? 'VIP ĐÚNG' : 'VIP SAI';
+                statusText = prediction.correct ? 'ĐÚNG' : 'SAI';
                 statusClass = prediction.correct ? 'log-correct' : 'log-incorrect';
             }
             
@@ -1051,7 +1051,7 @@
                 updateVIPStatsDisplay();
                 document.getElementById('historyLog').innerHTML = `
                     <div class="log-item">
-                        <span>Hệ thống VIP PRO đã reset...</span>
+                        <span>Hệ thống đã reset...</span>
                         <span class="log-waiting">VIP PRO</span>
                     </div>
                 `;
