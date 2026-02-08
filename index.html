@@ -419,19 +419,19 @@
         <!-- ĐIỀU KHIỂN -->
         <div class="control-panel">
             <button id="manualPredictBtn" class="btn btn-primary">
-                <i class="fas fa-bolt"></i> DỰ ĐOÁN VIP
+                <i class="fas fa-bolt"></i> DỰ ĐOÁN 
             </button>
             <button id="resetBtn" class="btn btn-danger">
-                <i class="fas fa-sync-alt"></i> RESET VIP
+                <i class="fas fa-sync-alt"></i> RESET 
             </button>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
-            <div>Hệ thống VIP PRO với thuật toán AI nâng cao | API: wtx.tele68.com</div>
-            <div class="signature">Wormgpt Cường Dev Don't Delete for copyright | Created by LUKZANMODZ</div>
+            <div>Hệ thống với thuật toán AI nâng cao | API: wtx.tele68.com</div>
+            <div class="signature">Created by LUKZANMODZ</div>
             <div style="margin-top: 10px; font-size: 0.8rem; color: var(--warning);">
-                <i class="fas fa-star"></i> VIP PRO EDITION - Thuật toán đã được nâng cấp tối đa
+                <i class="fas fa-star"></i>EDITION - Thuật toán đã được nâng cấp tối đa
             </div>
         </div>
     </div>
@@ -694,8 +694,7 @@
             if (sessions.length < 4) return { result: 'TAI', confidence: 50 };
             
             const results = sessions.map(s => s.resultTruyenThong);
-            
-            // Tính ma trận chuyển đổi trạng thái
+
             let transitions = {
                 'TAI->TAI': 0, 'TAI->XIU': 0,
                 'XIU->XIU': 0, 'XIU->TAI': 0
@@ -773,7 +772,7 @@
                 confidence = 70;
             } else {
                 // Trường hợp trung tính
-                result = Math.random() > 0.5 ? 'TAI' : 'XIU';
+                result = Math() > 0.5 ? 'TAI' : 'XIU';
                 confidence = 55;
             }
             
@@ -907,7 +906,6 @@
             updateVIPStatus('predict', 'waiting');
         }
 
-        // ==================== KIỂM TRA KẾT QUẢ VIP ====================
         function checkVIPPredictionResult() {
             if (systemState.predictions.length === 0) return;
             
@@ -940,7 +938,6 @@
             }
         }
 
-        // ==================== CẬP NHẬT UI VIP ====================
         function updateVIPSessionDisplay() {
             document.getElementById('currentSession').textContent = 
                 systemState.currentSessionId ? `#${systemState.currentSessionId}` : '#---';
@@ -1001,7 +998,6 @@
             if (logContainer.children.length > 10) logContainer.removeChild(logContainer.lastChild);
         }
 
-        // ==================== QUẢN LÝ TRẠNG THÁI VIP ====================
         function updateVIPStatus(type, status) {
             const elements = {
                 api: document.getElementById('apiStatus'),
