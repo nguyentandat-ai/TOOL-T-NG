@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAIXIU.AI - Hệ Thống Dự Đoán VIP PRO</title>
+    <title> TOOL-LC79</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -324,7 +324,7 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1><i class="fas fa-crown"></i> TAIXIU.AI - VIP PRO EDITION</h1>
+            <h1><i class="fas fa-crown"></i> TAIXIU.AI</h1>
             <div class="system-status">
                 <div class="status-item">
                     <i class="fas fa-circle" id="apiStatus"></i>
@@ -373,7 +373,7 @@
             
             <div id="predictionBox" class="prediction-box waiting">
                 <div id="resultDisplay" class="result-display">---</div>
-                <div id="confidenceDisplay" class="confidence-display">Đang khởi động thuật toán VIP PRO...</div>
+                <div id="confidenceDisplay" class="confidence-display">Đang khởi động thuật toán...</div>
                 
                 <div class="session-target">
                     <div>ĐANG CHỜ PHIÊN HOÀN TẤT:</div>
@@ -390,7 +390,7 @@
         <!-- LỊCH SỬ DỰ ĐOÁN -->
         <div class="prediction-history">
             <div class="history-title">
-                <i class="fas fa-chart-network"></i> THỐNG KÊ VIP PRO
+                <i class="fas fa-chart-network"></i> BẢNG THỐNG KÊ
             </div>
             
             <div class="history-stats">
@@ -437,7 +437,6 @@
     </div>
 
     <script>
-        // ==================== CẤU HÌNH VIP PRO ====================
         const API_URL = 'https://wtx.tele68.com/v1/tx/lite-sessions';
         
         // Biến hệ thống VIP
@@ -451,12 +450,11 @@
             dataCache: [],
             predictions: [],
             apiErrorCount: 0,
-            algorithmLevel: 'VIP_PRO'  // Thuật toán VIP PRO
+            algorithmLevel: ''  
         };
 
-        // ==================== KHỞI ĐỘNG VIP PRO ====================
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('TAIXIU.AI VIP PRO - Hệ thống đang khởi động...');
+            console.log('TAIXIU.AI - Hệ thống đang khởi động...');
             initializeVIPUI();
             initializeVIPSystem();
             startVIPPolling();
@@ -474,11 +472,11 @@
             const now = new Date();
             const timeStr = now.toLocaleTimeString('vi-VN');
             document.getElementById('predictStatusText').innerHTML = 
-                `<i class="fas fa-clock"></i> ${timeStr} | VIP PRO`;
+                `<i class="fas fa-clock"></i> ${timeStr} `;
         }
 
         function initializeVIPSystem() {
-            const savedPredictions = localStorage.getItem('taixiu_vip_predictions');
+            const savedPredictions = localStorage.getItem('taixiu_predictions');
             if (savedPredictions) {
                 systemState.predictions = JSON.parse(savedPredictions);
                 updateVIPStatsDisplay();
@@ -497,18 +495,17 @@
                     systemState.isProcessing = true;
                     await checkNewVIPSession();
                 } catch (error) {
-                    console.error('VIP Error:', error);
+                    console.error('Error:', error);
                     updateVIPStatus('api', 'error');
                     systemState.apiErrorCount++;
                 } finally {
                     systemState.isProcessing = false;
                 }
-            }, 8000); // 8 giây cho VIP
+            }, 3000);
             
             setTimeout(() => checkNewVIPSession(), 1000);
         }
 
-        // ==================== KIỂM TRA PHIÊN VIP ====================
         async function checkNewVIPSession() {
             updateVIPStatus('api', 'loading');
             
@@ -557,30 +554,23 @@
             }
         }
 
-        // ==================== THUẬT TOÁN VIP PRO - CẬP NHẬT MẠNH MẼ ====================
         function analyzeVIPData(sessions) {
             if (sessions.length < 5) {
                 return { result: 'TAI', confidence: 50 };
             }
             
             const recentSessions = sessions.slice(0, 15);
-            
-            // 1. PHÂN TÍCH CHUỖI THỜI GIAN NÂNG CAO
+
             const timeSeriesAnalysis = analyzeTimeSeriesVIP(recentSessions);
-            
-            // 2. PHÂN TÍCH XÁC SUẤT MARKOV NÂNG CAO
+
             const markovAnalysis = analyzeMarkovChainVIP(recentSessions);
-            
-            // 3. PHÂN TÍCH MẪU ĐIỂM SỐ
+
             const pointPatternAnalysis = analyzePointPatternsVIP(recentSessions);
-            
-            // 4. PHÂN TÍCH XU HƯỚNG DÀI HẠN
+
             const trendAnalysis = analyzeLongTermTrendVIP(sessions);
-            
-            // 5. PHÂN TÍCH CHU KỲ
+
             const cycleAnalysis = detectCyclesVIP(recentSessions);
-            
-            // TỔNG HỢP KẾT QUẢ VỚI TRỌNG SỐ VIP
+
             const results = [
                 { type: 'time', result: timeSeriesAnalysis.result, weight: 1.5, confidence: timeSeriesAnalysis.confidence },
                 { type: 'markov', result: markovAnalysis.result, weight: 1.3, confidence: markovAnalysis.confidence },
@@ -588,8 +578,7 @@
                 { type: 'trend', result: trendAnalysis.result, weight: 1.0, confidence: trendAnalysis.confidence },
                 { type: 'cycle', result: cycleAnalysis.result, weight: 0.8, confidence: cycleAnalysis.confidence }
             ];
-            
-            // TÍNH ĐIỂM TỔNG HỢP
+
             let taiScore = 50;
             let xiuScore = 50;
             
@@ -600,16 +589,14 @@
                     xiuScore += (r.confidence - 50) * (r.weight / 5);
                 }
             });
-            
-            // ĐIỀU CHỈNH THEO ĐỘ BIẾN ĐỘNG
+
             const volatility = calculateVolatilityVIP(recentSessions);
             if (volatility > 0.7) {
-                // Biến động cao -> giảm độ tin cậy
+
                 taiScore *= 0.9;
                 xiuScore *= 0.9;
             }
-            
-            // QUYẾT ĐỊNH CUỐI CÙNG
+
             const totalScore = taiScore + xiuScore;
             const taiPercent = Math.max(30, Math.min(90, Math.round((taiScore / totalScore) * 100)));
             const xiuPercent = 100 - taiPercent;
