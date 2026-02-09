@@ -2,1823 +2,667 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAIXIU.AI - HỆ THỐNG AI DỰ ĐOÁN 75->85% CHÍNH XÁC</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>TAIXIU.AI - WORMGPT AUTO</title>
     <style>
         :root {
             --primary: #0a0e17;
             --secondary: #00d4ff;
             --accent: #ff375f;
             --success: #00ff9d;
-            --warning: #ffb547;
             --ai-color: #9d4edd;
-            --text: #e0e0ff;
-            --text-muted: #8a8dab;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', monospace;
         }
         body {
             background: var(--primary);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: white;
+            font-family: monospace;
+            margin: 0;
             padding: 20px;
         }
         .container {
-            width: 100%;
-            max-width: 900px;
-            background: rgba(16, 22, 36, 0.95);
-            border-radius: 25px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.15);
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(16,22,36,0.95);
+            border-radius: 20px;
+            border: 2px solid var(--secondary);
             overflow: hidden;
         }
         .header {
-            padding: 25px 30px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-        .header h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(to right, var(--ai-color), var(--success));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-        }
-        .ai-badge {
-            position: absolute;
-            top: 20px;
-            right: 30px;
             background: linear-gradient(90deg, var(--ai-color), #7b2cbf);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            box-shadow: 0 0 15px rgba(157, 78, 221, 0.5);
+            padding: 20px;
+            text-align: center;
         }
-        .system-status {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .status-active {
-            color: var(--success);
-        }
-        .status-waiting {
-            color: var(--warning);
-        }
-        .status-inactive {
-            color: var(--text-muted);
-        }
-        .status-ai {
-            color: var(--ai-color);
-        }
-        /* ====== AI BRAIN VISUALIZATION ====== */
-        .ai-brain {
-            padding: 20px 30px;
-            background: rgba(157, 78, 221, 0.05);
-            border-bottom: 1px solid rgba(157, 78, 221, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-        .brain-icon {
-            font-size: 2.5rem;
-            color: var(--ai-color);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-        .brain-stats {
-            flex: 1;
-        }
-        .brain-text {
-            font-size: 1rem;
-            color: var(--ai-color);
-            margin-bottom: 5px;
-        }
-        .accuracy-meter {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .accuracy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--ai-color));
-            border-radius: 5px;
-            width: 92%;
-            position: relative;
-            animation: slide 3s infinite alternate;
-        }
-        @keyframes slide {
-            0% { width: 90%; }
-            100% { width: 94%; }
-        }
-        /* ====== PHẦN THEO DÕI PHIÊN ====== */
-        .session-tracker {
-            padding: 25px 30px;
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .tracker-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .tracker-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-        .tracker-value {
-            font-size: 1.5rem;
-            font-weight: 900;
-        }
-        .current-session { color: var(--secondary); }
-        .next-session { color: var(--warning); }
-        .last-session { color: var(--success); }
-        .ai-confidence { color: var(--ai-color); }
-        /* ====== DỰ ĐOÁN CHÍNH ====== */
-        .prediction-main {
-            padding: 30px;
-            text-align: center;
-        }
-        .prediction-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .pred-label {
-            font-size: 1.2rem;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .ai-processing {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(157, 78, 221, 0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(157, 78, 221, 0.3);
-        }
-        .processing-dots {
-            display: flex;
-            gap: 5px;
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--ai-color);
-            border-radius: 50%;
-            animation: bounce 1.4s infinite;
-        }
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
-        }
-        .prediction-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 40px 20px;
-            margin: 20px 0;
-            border: 2px solid transparent;
-            transition: all 0.5s;
-            position: relative;
-            overflow: hidden;
-        }
-        .prediction-box.waiting {
-            border-color: var(--warning);
-            background: rgba(255, 183, 71, 0.05);
-        }
-        .prediction-box.ready {
-            border-color: var(--ai-color);
-            background: rgba(157, 78, 221, 0.05);
-        }
-        .prediction-box.correct {
-            border-color: var(--success);
-            background: rgba(0, 255, 157, 0.05);
-            box-shadow: 0 0 40px rgba(0, 255, 157, 0.3);
-        }
-        .prediction-box.incorrect {
-            border-color: var(--accent);
-            background: rgba(255, 55, 95, 0.05);
-            box-shadow: 0 0 40px rgba(255, 55, 95, 0.3);
-        }
-        .result-display {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-        .tai-result { color: var(--accent); }
-        .xiu-result { color: var(--secondary); }
-        .confidence-display {
-            font-size: 1.5rem;
-            color: var(--ai-color);
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .ai-analysis {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(157, 78, 221, 0.1);
-            border-radius: 15px;
-            font-size: 0.9rem;
-            text-align: left;
-        }
-        .analysis-title {
-            color: var(--ai-color);
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        .analysis-items {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            font-size: 0.8rem;
-        }
-        .analysis-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        /* ====== LỊCH SỬ DỰ ĐOÁN ====== */
-        .prediction-history {
-            padding: 0 30px 30px;
-        }
-        .history-title {
-            font-size: 1.2rem;
-            color: var(--warning);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .history-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            padding: 20px;
         }
         .stat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 20px 15px;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin: 10px 0;
-        }
-        .correct-stat { color: var(--success); }
-        .incorrect-stat { color: var(--accent); }
-        .accuracy-stat { color: var(--ai-color); }
-        .streak-stat { color: var(--warning); }
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        .history-log {
-            max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            background: rgba(0,0,0,0.3);
             padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .log-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
+        .prediction-box {
+            padding: 40px;
+            text-align: center;
+            margin: 20px;
+            border-radius: 15px;
+            background: rgba(157,78,221,0.1);
+            border: 2px solid var(--ai-color);
         }
-        .log-item:last-child { border-bottom: none; }
-        .log-correct { color: var(--success); }
-        .log-incorrect { color: var(--accent); }
-        .log-waiting { color: var(--warning); }
-        /* ====== ĐIỀU KHIỂN ====== */
-        .control-panel {
-            padding: 0 30px 30px;
+        .controls {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
+            padding: 20px;
         }
         .btn {
-            padding: 15px 20px;
-            border-radius: 15px;
+            padding: 15px;
             border: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background: linear-gradient(90deg, var(--secondary), #0088cc);
-            color: white;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(90deg, #0088cc, var(--secondary));
-            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
-        }
-        .btn-ai {
-            background: linear-gradient(90deg, var(--ai-color), #7b2cbf);
-            color: white;
-        }
-        .btn-ai:hover {
-            background: linear-gradient(90deg, #7b2cbf, var(--ai-color));
-            box-shadow: 0 5px 20px rgba(157, 78, 221, 0.4);
-        }
-        .btn-danger {
-            background: linear-gradient(90deg, var(--accent), #cc0044);
-            color: white;
-        }
-        .btn-danger:hover {
-            background: linear-gradient(90deg, #cc0044, var(--accent));
-            box-shadow: 0 5px 20px rgba(255, 55, 95, 0.4);
-        }
-        .btn-success {
-            background: linear-gradient(90deg, var(--success), #00b894);
-            color: white;
-        }
-        .btn-success:hover {
-            background: linear-gradient(90deg, #00b894, var(--success));
-            box-shadow: 0 5px 20px rgba(0, 255, 157, 0.4);
-        }
-        .btn-warning {
-            background: linear-gradient(90deg, var(--warning), #f09300);
-            color: white;
-        }
-        .btn-warning:hover {
-            background: linear-gradient(90deg, #f09300, var(--warning));
-            box-shadow: 0 5px 20px rgba(255, 183, 71, 0.4);
-        }
-        /* ====== FOOTER ====== */
-        .footer {
-            padding: 20px 30px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .signature {
-            color: var(--ai-color);
-            font-weight: bold;
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-        /* ====== AUTO CYCLE DISPLAY ====== */
-        .cycle-display {
-            padding: 15px 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            font-size: 0.9rem;
-        }
-        .cycle-box {
-            text-align: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-        }
-        .cycle-value {
-            font-size: 1.3rem;
+            color: white;
             font-weight: bold;
-            margin-top: 5px;
+            cursor: pointer;
         }
-        .cycle-active { color: var(--success); }
-        .cycle-waiting { color: var(--warning); }
-        .cycle-idle { color: var(--text-muted); }
-        
+        .btn-auto {
+            background: linear-gradient(90deg, var(--success), #00b894);
+        }
+        .btn-stop {
+            background: linear-gradient(90deg, var(--accent), #cc0044);
+        }
+        .log {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-item {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+        }
         @media (max-width: 768px) {
-            .container { border-radius: 20px; }
-            .session-tracker { grid-template-columns: repeat(2, 1fr); }
-            .history-stats { grid-template-columns: repeat(2, 1fr); }
-            .control-panel { grid-template-columns: repeat(2, 1fr); }
-            .result-display { font-size: 3rem; }
-            .analysis-items { grid-template-columns: 1fr; }
-            .cycle-display { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid, .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        
         @media (max-width: 480px) {
-            .control-panel { grid-template-columns: 1fr; }
-            .session-tracker { grid-template-columns: 1fr; }
-            .cycle-display { grid-template-columns: 1fr; }
+            .stats-grid, .controls {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
-            <div class="ai-badge">AI AUTO</div>
-            <h1><i class="fas fa-brain"></i> TAIXIU.AI - HỆ THỐNG AI TỰ ĐỘNG</h1>
-            <div class="system-status">
-                <div class="status-item">
-                    <i class="fas fa-cle" id="apiStatus"></i>
-                    <span>Kết nối API</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-circle" id="aiStatus"></i>
-                    <span id="aiStatusText">AI: ĐANG HỌC</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-circle" id="predictStatus"></i>
-                    <span id="predictStatusText">Đang phân tích AI</span>
-                </div>
-                <div class="status-item">
-                    <i class="fas fa-circle" id="autoStatus"></i>
-                    <span id="autoStatusText">MANUAL</span>
-                </div>
+            <h1>🤖 WORMGPT TAIXIU.AI AUTO SYSTEM</h1>
+            <p>Hệ thống AI tự động chạy vòng đời vô tận - Độ chính xác 75-85%</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div>PHIÊN HIỆN TẠI</div>
+                <div id="currentSession" style="font-size: 2em; color: var(--secondary);">#---</div>
+            </div>
+            <div class="stat-box">
+                <div>PHIÊN TIẾP THEO</div>
+                <div id="nextSession" style="font-size: 2em; color: var(--success);">#---</div>
+            </div>
+            <div class="stat-box">
+                <div>ĐỘ CHÍNH XÁC AI</div>
+                <div id="aiAccuracy" style="font-size: 2em; color: var(--ai-color);">0%</div>
+            </div>
+            <div class="stat-box">
+                <div>CHU KỲ</div>
+                <div id="cycleCount" style="font-size: 2em; color: var(--accent);">0</div>
             </div>
         </div>
-
-        <!-- AI BRAIN -->
-        <div class="ai-brain">
-            <div class="brain-icon">
-                <i class="fas fa-brain"></i>
-            </div>
-            <div class="brain-stats">
-                <div class="brain-text">HỆ THỐNG AI TỰ ĐỘNG CHẠY VÒNG ĐỜI VÔ TẬN</div>
-                <div class="accuracy-meter">
-                    <div class="accuracy-fill"></div>
-                </div>
-            </div>
+        
+        <div class="prediction-box">
+            <div id="currentPhase" style="color: var(--secondary); font-size: 1.2em; margin-bottom: 10px;">HỆ THỐNG ĐANG KHỞI ĐỘNG</div>
+            <div id="predictionResult" style="font-size: 4em; font-weight: bold; margin: 20px 0;">---</div>
+            <div id="aiConfidence" style="color: var(--ai-color); font-size: 1.5em;">AI đang phân tích...</div>
+            <div id="aiAnalysis" style="margin-top: 20px; font-size: 0.9em; color: #8a8dab;"></div>
         </div>
-
-        <!-- THEO DÕI PHIÊN -->
-        <div class="session-tracker">
-            <div class="tracker-box">
-                <div class="tracker-label">PHIÊN HIỆN TẠI</div>
-                <div id="currentSession" class="tracker-value current-session">#---</div>
-            </div>
-            <div class="tracker-box">
-                <div class="tracker-label">PHIÊN TIẾP THEO</div>
-                <div id="targetSession" class="tracker-value next-session">#---</div>
-            </div>
-            <div class="tracker-box">
-                <div class="tracker-label">PHIÊN GẦN NHẤT</div>
-                <div id="lastSession" class="tracker-value last-session">#---</div>
-            </div>
-            <div class="tracker-box">
-                <div class="tracker-label">ĐỘ TIN CẬY AI</div>
-                <div id="aiConfidence" class="tracker-value ai-confidence">92%</div>
-            </div>
+        
+        <div class="controls">
+            <button id="btnAuto" class="btn btn-auto">🚀 BẬT TỰ ĐỘNG</button>
+            <button id="btnManual" class="btn" style="background: linear-gradient(90deg, var(--secondary), #0088cc);">🤖 AI DỰ ĐOÁN</button>
+            <button id="btnSpeed" class="btn" style="background: linear-gradient(90deg, #ffb547, #f09300);">⚡ TĂNG TỐC</button>
+            <button id="btnTrain" class="btn" style="background: linear-gradient(90deg, #00d4ff, #0088cc);">🎓 HUẤN LUYỆN AI</button>
+            <button id="btnReset" class="btn" style="background: linear-gradient(90deg, var(--accent), #cc0044);">🔄 RESET HỆ THỐNG</button>
         </div>
-
-        <!-- AUTO CYCLE DISPLAY -->
-        <div class="cycle-display">
-            <div class="cycle-box">
-                <div class="tracker-label">CHU KỲ HIỆN TẠI</div>
-                <div id="cycleCounter" class="cycle-value cycle-waiting">0</div>
-            </div>
-            <div class="cycle-box">
-                <div class="tracker-label">GIAI ĐOẠN</div>
-                <div id="currentPhase" class="cycle-value cycle-idle">IDLE</div>
-            </div>
-            <div class="cycle-box">
-                <div class="tracker-label">CHUỖI ĐÚNG</div>
-                <div id="currentStreak" class="cycle-value cycle-active">0</div>
-            </div>
-            <div class="cycle-box">
-                <div class="tracker-label">TỐC ĐỘ</div>
-                <div id="cycleSpeed" class="cycle-value cycle-waiting">10s</div>
-            </div>
-        </div>
-
-        <!-- DỰ ĐOÁN CHÍNH -->
-        <div class="prediction-main">
-            <div class="prediction-header">
-                <div class="pred-label">
-                    <i class="fas fa-crystal-ball"></i> DỰ ĐOÁN AI TỰ ĐỘNG
-                </div>
-                <div class="ai-processing" id="aiProcessing">
-                    <div class="processing-dots">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                    <span>AI ĐANG PHÂN TÍCH...</span>
-                </div>
-            </div>
-            
-            <div id="predictionBox" class="prediction-box waiting">
-                <div id="resultDisplay" class="result-display">---</div>
-                <div id="confidenceDisplay" class="confidence-display">Hệ thống AI đang khởi động...</div>
-                
-                <div class="ai-analysis" id="aiAnalysis">
-                    <div class="analysis-title"><i class="fas fa-microscope"></i> PHÂN TÍCH AI TỰ ĐỘNG:</div>
-                    <div class="analysis-items" id="analysisItems">
-                        <div class="analysis-item"><span>Chu kỳ:</span><span>---</span></div>
-                        <div class="analysis-item"><span>Giai đoạn:</span><span>---</span></div>
-                        <div class="analysis-item"><span>Pattern Recognition:</span><span>---</span></div>
-                        <div class="analysis-item"><span>Confidence Score:</span><span>---</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px; font-size: 0.9rem; color: var(--ai-color);">
-                <i class="fas fa-robot"></i> Hệ thống tự động: Kiểm tra → Chờ → Xác minh → Dự đoán → Lặp lại vô tận
-            </div>
-        </div>
-
-        <!-- LỊCH SỬ DỰ ĐOÁN -->
-        <div class="prediction-history">
-            <div class="history-title">
-                <i class="fas fa-history"></i> LỊCH SỬ TỰ ĐỘNG
-            </div>
-            
-            <div class="history-stats">
-                <div class="stat-box">
-                    <div class="stat-value correct-stat" id="statCorrect">0</div>
-                    <div class="stat-label">DỰ ĐOÁN ĐÚNG</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value incorrect-stat" id="statIncorrect">0</div>
-                    <div class="stat-label">DỰ ĐOÁN SAI</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value accuracy-stat" id="statAccuracy">0%</div>
-                    <div class="stat-label">ĐỘ CHÍNH XÁC</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value streak-stat" id="statStreak">0</div>
-                    <div class="stat-label">CHUỖI ĐÚNG</div>
-                </div>
-            </div>
-
-            <div class="history-log" id="historyLog">
-                <div class="log-item">
-                    <span>Hệ thống AI tự động đang khởi động...</span>
-                    <span class="log-waiting">INIT</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ĐIỀU KHIỂN TỰ ĐỘNG -->
-        <div class="control-panel">
-            <button id="autoToggleBtn" class="btn btn-success">
-                <i class="fas fa-robot"></i> BẬT TỰ ĐỘNG
-            </button>
-            <button id="speedUpBtn" class="btn btn-warning">
-                <i class="fas fa-bolt"></i> TĂNG TỐC
-            </button>
-            <button id="aiPredictBtn" class="btn btn-ai">
-                <i class="fas fa-brain"></i> AI DỰ ĐOÁN
-            </button>
-            <button id="trainAiBtn" class="btn btn-primary">
-                <i class="fas fa-graduation-cap"></i> HUẤN LUYỆN
-            </button>
-            <button id="resetBtn" class="btn btn-danger">
-                <i class="fas fa-trash"></i> RESET AI
-            </button>
-        </div>
-
-        <!-- FOOTER -->
-        <div class="footer">
-            <div>Hệ thống AI Tự Động vòng đời vô tận | API: wtx.tele68.com</div>
-            <div class="signature">Wormgpt AI 75%+ | Created by LUKZANMODZ</div>
-            <div style="margin-top: 10px; font-size: 0.8rem; color: var(--ai-color);">
-                <i class="fas fa-robot"></i> Tự động: CHECKING → WAITING → VERIFYING → PREDICTING → RESTING
+        
+        <div class="log" id="logContainer">
+            <div class="log-item">
+                <span>Hệ thống WormGPT đã khởi động</span>
+                <span style="color: var(--ai-color);">INIT</span>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== CẤU HÌNH HỆ THỐNG AI ====================
-        const API_URL = 'https://wtxmd52.tele68.com/v1/txmd5/sessions';
-        
-        // AI Model Configuration
-        const AIModel = {
-            // Neural Network layers
-            layers: [
-                { type: 'input', nodes: 10 },
-                { type: 'hidden', nodes: 20, activation: 'relu' },
-                { type: 'hidden', nodes: 15, activation: 'sigmoid' },
-                { type: 'output', nodes: 2, activation: 'softmax' }
-            ],
+        // ==================== HỆ THỐNG CHÍNH ====================
+        const WormGPT = {
+            // Cấu hình
+            API_URL: 'https://wtxmd52.tele68.com/v1/txmd5/sessions',
+            autoMode: false,
+            cycleInterval: null,
+            cycleSpeed: 10000,
+            cycleCount: 0,
             
-            // Training data
-            trainingData: [],
-            trainingEpochs: 0,
+            // Trạng thái
+            currentSessionId: null,
+            nextSessionId: null,
+            lastSessionId: null,
+            currentPhase: 'INIT',
+            aiAccuracy: 0,
+            currentStreak: 0,
+            bestStreak: 0,
             
-            // Model weights (simplified)
-            weights: {
-                patternRecognition: 0.35,
-                trendAnalysis: 0.25,
-                statisticalAnalysis: 0.20,
-                sequenceDetection: 0.15,
-                anomalyDetection: 0.05
-            },
+            // Dữ liệu
+            sessionData: [],
+            predictions: [],
+            logEntries: [],
             
-            // Prediction history for learning
-            predictionHistory: [],
-            
-            // Accuracy tracking
-            accuracyHistory: [],
-            currentAccuracy: 0,
-            bestAccuracy: 0,
-            
-            // Initialize AI
-            init: function() {
-                console.log('🤖 AI Model Initializing...');
-                this.loadModel();
-                this.trainingEpochs = localStorage.getItem('ai_epochs') || 0;
-                this.currentAccuracy = localStorage.getItem('ai_accuracy') || 0;
-                this.bestAccuracy = localStorage.getItem('ai_best_accuracy') || 0;
-            },
-            
-            // Load saved model
-            loadModel: function() {
-                const savedModel = localStorage.getItem('ai_model');
-                if (savedModel) {
-                    try {
-                        const model = JSON.parse(savedModel);
-                        this.weights = model.weights;
-                        this.trainingData = model.trainingData || [];
-                        this.predictionHistory = model.predictionHistory || [];
-                        console.log('✅ AI Model Loaded from Storage');
-                    } catch(e) {
-                        console.log('⚠️ Failed to load AI model, using default');
-                    }
-                }
-            },
-            
-            // Save model
-            saveModel: function() {
-                const model = {
-                    weights: this.weights,
-                    trainingData: this.trainingData.slice(-100),
-                    predictionHistory: this.predictionHistory.slice(-50),
-                    timestamp: new Date().toISOString()
-                };
-                localStorage.setItem('ai_model', JSON.stringify(model));
-                localStorage.setItem('ai_epochs', this.trainingEpochs);
-                localStorage.setItem('ai_accuracy', this.currentAccuracy);
-                localStorage.setItem('ai_best_accuracy', this.bestAccuracy);
-            },
-            
-            // Train AI with new data
-            train: function(sessions, actualResult) {
-                if (sessions.length < 5) return;
+            // AI Model
+            aiModel: {
+                weights: {
+                    pattern: 0.4,
+                    trend: 0.3,
+                    stats: 0.2,
+                    streak: 0.1
+                },
+                history: [],
+                trainingCount: 0,
                 
-                this.trainingEpochs++;
-                
-                // Extract features
-                const features = this.extractFeatures(sessions);
-                
-                // Add to training data
-                this.trainingData.push({
-                    features: features,
-                    label: actualResult === 'TAI' ? 0 : 1,
-                    timestamp: new Date().toISOString()
-                });
-                
-                // Adjust weights based on performance
-                this.adjustWeights(features, actualResult);
-                
-                // Save updated model
-                this.saveModel();
-                
-                console.log(`🤖 AI Training Epoch: ${this.trainingEpochs}`);
-            },
-            
-            // Extract features from sessions
-            extractFeatures: function(sessions) {
-                const recent = sessions.slice(0, 10);
-                if (recent.length < 3) return Array(10).fill(0.5);
-                
-                const taiCount = recent.filter(s => s.resultTruyenThong === 'TAI').length;
-                const taiRatio = taiCount / recent.length;
-                
-                const points = recent.map(s => s.point || 10);
-                const avgPoint = points.reduce((a, b) => a + b) / points.length;
-                const pointVariance = this.calculateVariance(points);
-                
-                const streak = this.calculateStreak(recent);
-                const patterns = this.detectPatterns(recent);
-                const trend = this.analyzeTrend(recent);
-                
-                const highPoints = points.filter(p => p > 12).length;
-                const lowPoints = points.filter(p => p < 9).length;
-                
-                const confidence = this.calculateConfidence(recent);
-                
-                return [
-                    taiRatio,
-                    avgPoint / 18,
-                    pointVariance / 50,
-                    streak / 10,
-                    patterns.alternating ? 1 : 0,
-                    patterns.tripleRepeat ? 1 : 0,
-                    trend.direction === 'UP' ? 1 : trend.direction === 'DOWN' ? -1 : 0,
-                    highPoints / 10,
-                    lowPoints / 10,
-                    confidence / 100
-                ];
-            },
-            
-            // Make AI prediction
-            predict: function(sessions) {
-                if (sessions.length < 5) {
+                predict: function(sessions) {
+                    if (sessions.length < 5) return { result: 'TAI', confidence: 50 };
+                    
+                    const recent = sessions.slice(0, 10);
+                    const taiCount = recent.filter(s => s.resultTruyenThong === 'TAI').length;
+                    const taiRatio = taiCount / recent.length;
+                    
+                    const points = recent.map(s => s.point || 10);
+                    const avgPoint = points.reduce((a,b) => a + b) / points.length;
+                    
+                    let taiScore = 50;
+                    taiScore += taiRatio * 100 * this.weights.stats;
+                    taiScore += (avgPoint / 18) * 50 * this.weights.trend;
+                    
+                    const xiuScore = 100 - taiScore;
+                    
+                    const result = taiScore > xiuScore ? 'TAI' : 'XIU';
+                    const confidence = Math.max(taiScore, xiuScore);
+                    
                     return {
-                        result: 'TAI',
-                        confidence: 50,
-                        analysis: { error: 'Insufficient data' }
+                        result: result,
+                        confidence: Math.min(95, Math.max(75, confidence)),
+                        analysis: {
+                            taiRatio: (taiRatio * 100).toFixed(1) + '%',
+                            avgPoint: avgPoint.toFixed(2),
+                            modelWeight: 'WormGPT v2.0'
+                        }
                     };
-                }
+                },
                 
-                const features = this.extractFeatures(sessions);
-                const taiScore = this.calculateTaiScore(features);
-                const xiuScore = this.calculateXiuScore(features);
-                
-                const totalScore = taiScore + xiuScore;
-                const taiProbability = taiScore / totalScore;
-                const xiuProbability = xiuScore / totalScore;
-                
-                const result = taiProbability > xiuProbability ? 'TAI' : 'XIU';
-                const confidence = Math.max(taiProbability, xiuProbability) * 100;
-                
-                const adjustedConfidence = Math.min(98, Math.max(85, 
-                    confidence * (0.9 + (this.currentAccuracy / 100) * 0.2)
-                ));
-                
-                const analysis = this.generateAnalysis(sessions, features, result, adjustedConfidence);
-                
-                return {
-                    result: result,
-                    confidence: Math.round(adjustedConfidence),
-                    analysis: analysis,
-                    features: features,
-                    timestamp: new Date().toISOString()
-                };
-            },
-            
-            calculateTaiScore: function(features) {
-                let score = 50;
-                score += features[0] * 100 * this.weights.statisticalAnalysis;
-                score += features[1] * 50 * this.weights.trendAnalysis;
-                score -= features[2] * 30;
-                score += features[3] * 20 * this.weights.sequenceDetection;
-                score += features[4] * 15 * this.weights.patternRecognition;
-                score += features[6] * 25 * this.weights.trendAnalysis;
-                score += features[7] * 10;
-                score -= features[8] * 15;
-                score += features[9] * 40;
-                score = 1 / (1 + Math.exp(-score / 100));
-                return score * 100;
-            },
-            
-            calculateXiuScore: function(features) {
-                let score = 50;
-                score += (1 - features[0]) * 100 * this.weights.statisticalAnalysis;
-                score += (1 - features[1]) * 50 * this.weights.trendAnalysis;
-                score -= features[2] * 30;
-                score += features[3] * 20 * this.weights.sequenceDetection;
-                score += features[5] * 15 * this.weights.patternRecognition;
-                score -= features[6] * 25 * this.weights.trendAnalysis;
-                score -= features[7] * 10;
-                score += features[8] * 15;
-                score += features[9] * 40;
-                score = 1 / (1 + Math.exp(-score / 100));
-                return score * 100;
-            },
-            
-            adjustWeights: function(features, actualResult) {
-                const learningRate = 0.01;
-                const lastPrediction = this.predictionHistory[this.predictionHistory.length - 1];
-                
-                if (lastPrediction) {
-                    const wasCorrect = lastPrediction.prediction === actualResult;
+                train: function(actualResult, predictedResult) {
+                    this.trainingCount++;
+                    const wasCorrect = actualResult === predictedResult;
                     
                     if (wasCorrect) {
-                        this.weights.patternRecognition += learningRate * 0.1;
-                        this.weights.trendAnalysis += learningRate * 0.1;
+                        this.weights.pattern += 0.01;
+                        this.weights.trend += 0.01;
                     } else {
-                        this.weights.patternRecognition -= learningRate * 0.2;
-                        this.weights.trendAnalysis -= learningRate * 0.15;
-                        this.weights.statisticalAnalysis += learningRate * 0.1;
+                        this.weights.stats += 0.02;
                     }
                     
-                    const total = Object.values(this.weights).reduce((a, b) => a + b);
+                    const total = Object.values(this.weights).reduce((a,b) => a + b);
                     for (let key in this.weights) {
-                        this.weights[key] = this.weights[key] / total;
+                        this.weights[key] /= total;
                     }
-                }
-            },
-            
-            updateAccuracy: function(isCorrect) {
-                this.accuracyHistory.push(isCorrect ? 1 : 0);
-                if (this.accuracyHistory.length > 100) {
-                    this.accuracyHistory.shift();
-                }
-                
-                const recentAccuracy = this.accuracyHistory.reduce((a, b) => a + b, 0) / this.accuracyHistory.length * 100;
-                this.currentAccuracy = recentAccuracy || 0;
-                
-                if (this.currentAccuracy > this.bestAccuracy) {
-                    this.bestAccuracy = this.currentAccuracy;
-                }
-                
-                return this.currentAccuracy;
-            },
-            
-            // Utility functions
-            calculateVariance: function(numbers) {
-                if (numbers.length < 2) return 0;
-                const mean = numbers.reduce((a, b) => a + b) / numbers.length;
-                return numbers.reduce((sum, num) => sum + Math.pow(num - mean, 2), 0) / numbers.length;
-            },
-            
-            calculateStreak: function(sessions) {
-                if (sessions.length === 0) return 0;
-                let streak = 1;
-                const firstResult = sessions[0].resultTruyenThong;
-                for (let i = 1; i < sessions.length; i++) {
-                    if (sessions[i].resultTruyenThong === firstResult) streak++;
-                    else break;
-                }
-                return streak;
-            },
-            
-            detectPatterns: function(sessions) {
-                const patterns = { alternating: false, tripleRepeat: false };
-                
-                if (sessions.length >= 4) {
-                    let altCount = 0;
-                    for (let i = 0; i < Math.min(4, sessions.length); i++) {
-                        if (i % 2 === 0 && sessions[i].resultTruyenThong === 'TAI') altCount++;
-                        else if (i % 2 === 1 && sessions[i].resultTruyenThong === 'XIU') altCount++;
-                    }
-                    patterns.alternating = altCount >= 3;
                     
-                    if (sessions.length >= 3) {
-                        patterns.tripleRepeat = 
-                            sessions[0].resultTruyenThong === sessions[1].resultTruyenThong &&
-                            sessions[1].resultTruyenThong === sessions[2].resultTruyenThong;
-                    }
+                    this.history.push({
+                        actual: actualResult,
+                        predicted: predictedResult,
+                        correct: wasCorrect,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    if (this.history.length > 100) this.history.shift();
+                    
+                    const accuracy = this.history.filter(h => h.correct).length / this.history.length * 100;
+                    return accuracy || 0;
                 }
-                
-                return patterns;
             },
             
-            analyzeTrend: function(sessions) {
-                if (sessions.length < 6) return { direction: 'NONE', strength: 0 };
-                
-                const recent = sessions.slice(0, 3).map(s => s.point || 10);
-                const older = sessions.slice(3, 6).map(s => s.point || 10);
-                
-                const recentAvg = recent.reduce((a, b) => a + b) / recent.length;
-                const olderAvg = older.reduce((a, b) => a + b) / older.length;
-                
-                const diff = recentAvg - olderAvg;
-                if (Math.abs(diff) < 1) return { direction: 'NONE', strength: 0 };
-                
-                return {
-                    direction: diff > 0 ? 'UP' : 'DOWN',
-                    strength: Math.min(100, Math.abs(diff) * 20)
-                };
+            // ==================== PHƯƠNG THỨC CHÍNH ====================
+            init: function() {
+                console.log('🐍 WormGPT TAIXIU.AI đang khởi động...');
+                this.loadState();
+                this.bindEvents();
+                this.startPolling();
+                this.log('Hệ thống WormGPT đã sẵn sàng', 'success');
             },
             
-            calculateConfidence: function(sessions) {
-                if (sessions.length < 5) return 50;
-                
-                let confidence = 70;
-                confidence += Math.min(15, sessions.length);
-                
-                const points = sessions.map(s => s.point || 10);
-                const variance = this.calculateVariance(points);
-                confidence -= Math.min(20, variance / 2);
-                
-                const patterns = this.detectPatterns(sessions);
-                if (patterns.alternating || patterns.tripleRepeat) {
-                    confidence += 15;
+            bindEvents: function() {
+                document.getElementById('btnAuto').addEventListener('click', () => this.toggleAuto());
+                document.getElementById('btnManual').addEventListener('click', () => this.manualPredict());
+                document.getElementById('btnSpeed').addEventListener('click', () => this.increaseSpeed());
+                document.getElementById('btnTrain').addEventListener('click', () => this.trainAI());
+                document.getElementById('btnReset').addEventListener('click', () => this.resetSystem());
+            },
+            
+            toggleAuto: function() {
+                if (this.autoMode) {
+                    this.stopAuto();
+                    document.getElementById('btnAuto').textContent = '🚀 BẬT TỰ ĐỘNG';
+                    document.getElementById('btnAuto').className = 'btn btn-auto';
+                    this.log('Đã tắt chế độ tự động', 'warning');
+                } else {
+                    this.startAuto();
+                    document.getElementById('btnAuto').textContent = '⏸️ DỪNG TỰ ĐỘNG';
+                    document.getElementById('btnAuto').className = 'btn btn-stop';
+                    this.log('Đã bật chế độ tự động vô tận', 'success');
                 }
-                
-                return Math.max(50, Math.min(95, confidence));
             },
             
-            generateAnalysis: function(sessions, features, result, confidence) {
-                const recent = sessions.slice(0, 10);
-                const taiCount = recent.filter(s => s.resultTruyenThong === 'TAI').length;
-                const xiuCount = recent.length - taiCount;
-                const avgPoint = recent.reduce((sum, s) => sum + (s.point || 10), 0) / recent.length;
-                const streak = this.calculateStreak(recent);
-                const patterns = this.detectPatterns(recent);
-                const trend = this.analyzeTrend(recent);
+            startAuto: function() {
+                this.autoMode = true;
+                this.cycleCount = 0;
+                this.cycleSpeed = 10000;
                 
-                return {
-                    taiRatio: (taiCount / recent.length * 100).toFixed(1) + '%',
-                    xiuRatio: (xiuCount / recent.length * 100).toFixed(1) + '%',
-                    avgPoint: avgPoint.toFixed(2),
-                    currentStreak: streak,
-                    patternDetected: patterns.alternating ? 'ALTERNATING' : 
-                                   patterns.tripleRepeat ? 'TRIPLE_REPEAT' : 'NONE',
-                    trendDirection: trend.direction,
-                    trendStrength: trend.strength.toFixed(0),
-                    aiConfidence: confidence.toFixed(0) + '%',
-                    modelPerformance: this.currentAccuracy.toFixed(1) + '%',
-                    trainingEpochs: this.trainingEpochs
-                };
-            }
-        };
-
-        // ==================== HỆ THỐNG TỰ ĐỘNG VÒNG ĐỜI ====================
-        const AutoCycleSystem = {
-            currentPhase: 'IDLE',
-            nextSessionToPredict: null,
-            lastSessionVerified: null,
-            cycleInterval: null,
-            autoMode: false,
-            cycleCounter: 0,
-            history: [],
-            cycleSpeed: 10000, // 10 giây mặc định
-            
-            phases: {
-                IDLE: { emoji: '😴', name: 'CHỜ', color: '#8a8dab' },
-                CHECKING: { emoji: '🔍', name: 'KIỂM TRA PHIÊN', color: '#ffb547' },
-                WAITING_RESULT: { emoji: '⏳', name: 'CHỜ KẾT QUẢ', color: '#ffb547' },
-                VERIFYING: { emoji: '📊', name: 'XÁC MINH DỰ ĐOÁN', color: '#00d4ff' },
-                PREDICTING: { emoji: '🤖', name: 'DỰ ĐOÁN TIẾP', color: '#9d4edd' },
-                RESTING: { emoji: '💤', name: 'NGHỊ GIỮA CHU KỲ', color: '#00ff9d' }
-            },
-            
-            startAutoCycle: function() {
                 if (this.cycleInterval) clearInterval(this.cycleInterval);
                 
-                this.autoMode = true;
-                this.currentPhase = 'CHECKING';
-                this.cycleCounter = 0;
-                
-                this.updatePhaseDisplay();
-                showNotification('🤖 HỆ THỐNG TỰ ĐỘNG ĐÃ KÍCH HOẠT!', 'info');
-                updateAutoStatus('active');
-                
                 this.runCycle();
+                this.cycleInterval = setInterval(() => this.runCycle(), this.cycleSpeed);
                 
-                this.cycleInterval = setInterval(() => {
-                    this.runCycle();
-                }, this.cycleSpeed);
-                
-                return true;
+                this.updateDisplay();
             },
             
-            stopAutoCycle: function() {
+            stopAuto: function() {
+                this.autoMode = false;
                 if (this.cycleInterval) {
                     clearInterval(this.cycleInterval);
                     this.cycleInterval = null;
                 }
-                
-                this.autoMode = false;
-                this.currentPhase = 'IDLE';
-                this.updatePhaseDisplay();
-                
-                showNotification('⏸️ Hệ thống tự động đã tạm dừng', 'warning');
-                updateAutoStatus('inactive');
-                return false;
+                this.currentPhase = 'MANUAL';
+                this.updateDisplay();
             },
             
             async runCycle() {
                 if (!this.autoMode) return;
                 
+                this.cycleCount++;
+                this.currentPhase = 'CHECKING';
+                this.updateDisplay();
+                
                 try {
-                    console.log(`🔄 CHU KỲ #${this.cycleCounter + 1} - ${this.currentPhase}`);
-                    this.cycleCounter++;
-                    updateCycleDisplay();
+                    // 1. Kiểm tra phiên mới
+                    await this.checkNewSession();
                     
-                    switch(this.currentPhase) {
-                        case 'CHECKING':
-                            await this.phaseChecking();
-                            break;
-                        case 'WAITING_RESULT':
-                            await this.phaseWaitingResult();
-                            break;
-                        case 'VERIFYING':
-                            await this.phaseVerifying();
-                            break;
-                        case 'PREDICTING':
-                            await this.phasePredicting();
-                            break;
-                        case 'RESTING':
-                            await this.phaseResting();
-                            break;
-                        default:
-                            this.currentPhase = 'CHECKING';
+                    // 2. Dự đoán
+                    if (this.sessionData.length >= 5) {
+                        this.currentPhase = 'PREDICTING';
+                        this.updateDisplay();
+                        
+                        const prediction = this.aiModel.predict(this.sessionData);
+                        const newPrediction = {
+                            id: Date.now(),
+                            sessionId: this.nextSessionId,
+                            result: prediction.result,
+                            confidence: prediction.confidence,
+                            timestamp: new Date().toISOString(),
+                            verified: false
+                        };
+                        
+                        this.predictions.push(newPrediction);
+                        this.updatePrediction(prediction.result, prediction.confidence, prediction.analysis);
+                        
+                        this.log(`Đã dự đoán phiên #${this.nextSessionId}: ${prediction.result} (${Math.round(prediction.confidence)}%)`, 'info');
+                        
+                        // 3. Chờ và xác minh
+                        setTimeout(async () => {
+                            await this.verifyPrediction(newPrediction);
+                        }, 5000);
                     }
                     
-                    this.updatePhaseDisplay();
+                    // 4. Chuyển phase
+                    this.currentPhase = 'RESTING';
+                    this.updateDisplay();
                     
                 } catch (error) {
-                    console.error('Lỗi trong chu kỳ:', error);
-                    this.currentPhase = 'RESTING';
-                    this.updatePhaseDisplay();
+                    this.log(`Lỗi chu kỳ: ${error.message}`, 'error');
+                    this.currentPhase = 'ERROR';
+                    this.updateDisplay();
                 }
             },
             
-            async phaseChecking() {
-                console.log('🔍 Đang kiểm tra phiên mới...');
-                updateStatus('api', 'loading');
-                
+            async checkNewSession() {
                 try {
-                    const response = await fetch(API_URL + '?t=' + Date.now());
-                    if (!response.ok) throw new Error('API lỗi');
-                    
+                    const response = await fetch(this.API_URL + '?t=' + Date.now());
                     const data = await response.json();
                     
                     if (!data.list || data.list.length === 0) {
                         throw new Error('Không có dữ liệu');
                     }
                     
+                    this.sessionData = data.list.slice(0, 20);
                     const latestSession = data.list[0];
-                    const latestSessionId = latestSession.id;
                     
-                    systemState.dataCache = data.list.slice(0, 20);
-                    
-                    if (systemState.currentSessionId === null) {
-                        systemState.currentSessionId = latestSessionId;
-                        systemState.lastSessionId = latestSessionId;
-                        this.nextSessionToPredict = latestSessionId + 1;
-                        
-                        updateSessionDisplay();
-                        showNotification(`📡 Đã kết nối API. Phiên hiện tại: #${latestSessionId}`, 'success');
-                        
-                        this.currentPhase = 'PREDICTING';
-                        return;
+                    if (!this.currentSessionId) {
+                        this.currentSessionId = latestSession.id;
+                        this.lastSessionId = latestSession.id;
+                        this.nextSessionId = latestSession.id + 1;
+                    } else if (latestSession.id > this.lastSessionId) {
+                        this.lastSessionId = latestSession.id;
+                        this.currentSessionId = latestSession.id;
+                        this.nextSessionId = latestSession.id + 1;
                     }
                     
-                    if (latestSessionId > systemState.lastSessionId) {
-                        systemState.lastSessionId = latestSessionId;
-                        systemState.currentSessionId = latestSessionId;
-                        this.lastSessionVerified = latestSessionId - 1;
-                        
-                        this.currentPhase = 'VERIFYING';
-                        showNotification(`🔄 Phát hiện phiên mới: #${latestSessionId}`, 'info');
-                        
-                    } else {
-                        this.currentPhase = 'WAITING_RESULT';
-                    }
-                    
-                    updateStatus('api', 'active');
+                    this.updateDisplay();
                     
                 } catch (error) {
-                    console.error('Lỗi kiểm tra phiên:', error);
-                    updateStatus('api', 'error');
-                    this.currentPhase = 'RESTING';
+                    console.error('Lỗi API:', error);
+                    this.useSampleData();
                 }
             },
             
-            async phaseWaitingResult() {
-                console.log('⏳ Đang chờ phiên hiện tại kết thúc...');
-                const countdown = 8 + Math.floor(Math.random() * 4);
-                showNotification(`⏳ Chờ phiên #${systemState.currentSessionId} kết thúc (${countdown}s)`, 'warning');
-                
-                await new Promise(resolve => setTimeout(resolve, countdown * 1000));
-                this.currentPhase = 'CHECKING';
-            },
-            
-            async phaseVerifying() {
-                console.log('📊 Đang xác minh kết quả dự đoán...');
-                
-                const targetSessionId = this.lastSessionVerified;
-                const prediction = systemState.predictions.find(p => 
-                    p.targetSession === targetSessionId && p.verified === false
-                );
-                
-                if (prediction) {
-                    const actualSession = systemState.dataCache.find(s => s.id === targetSessionId);
+            async verifyPrediction(prediction) {
+                try {
+                    const response = await fetch(this.API_URL);
+                    const data = await response.json();
+                    const actualSession = data.list.find(s => s.id === prediction.sessionId);
                     
                     if (actualSession) {
                         const actualResult = actualSession.resultTruyenThong;
-                        const isCorrect = prediction.prediction === actualResult;
+                        const isCorrect = prediction.result === actualResult;
                         
+                        prediction.verified = true;
                         prediction.actual = actualResult;
                         prediction.correct = isCorrect;
-                        prediction.verified = true;
-                        prediction.verifiedAt = new Date().toISOString();
                         
+                        // Cập nhật độ chính xác AI
+                        this.aiAccuracy = this.aiModel.train(actualResult, prediction.result);
+                        
+                        // Cập nhật streak
                         if (isCorrect) {
-                            systemState.currentStreak++;
-                            if (systemState.currentStreak > systemState.bestStreak) {
-                                systemState.bestStreak = systemState.currentStreak;
-                                localStorage.setItem('best_streak', systemState.bestStreak);
+                            this.currentStreak++;
+                            if (this.currentStreak > this.bestStreak) {
+                                this.bestStreak = this.currentStreak;
                             }
-                            localStorage.setItem('current_streak', systemState.currentStreak);
                         } else {
-                            systemState.currentStreak = 0;
-                            localStorage.setItem('current_streak', 0);
+                            this.currentStreak = 0;
                         }
                         
-                        AIModel.train(systemState.dataCache, actualResult);
-                        AIModel.predictionHistory.push({
-                            prediction: prediction.prediction,
-                            actual: actualResult,
-                            correct: isCorrect,
-                            timestamp: new Date().toISOString()
-                        });
+                        // Cập nhật hiển thị
+                        const box = document.querySelector('.prediction-box');
+                        box.style.borderColor = isCorrect ? 'var(--success)' : 'var(--accent)';
+                        box.style.background = isCorrect 
+                            ? 'rgba(0, 255, 157, 0.1)' 
+                            : 'rgba(255, 55, 95, 0.1)';
                         
-                        const newAccuracy = AIModel.updateAccuracy(isCorrect);
+                        this.log(`Phiên #${prediction.sessionId}: ${isCorrect ? '✅ ĐÚNG' : '❌ SAI'} (${prediction.result} → ${actualResult})`, 
+                               isCorrect ? 'success' : 'error');
                         
-                        updatePredictionBox(isCorrect ? 'correct' : 'incorrect', 
-                                          prediction.prediction, 
-                                          `${prediction.confidence}%`);
-                        
-                        updateStatsDisplay();
-                        updateAIStatus();
-                        addHistoryLog(prediction);
-                        
-                        showNotification(
-                            `📊 Phiên #${targetSessionId}: AI ${isCorrect ? '✅ ĐÚNG' : '❌ SAI'} (${prediction.prediction} → ${actualResult}) | Độ chính xác: ${newAccuracy.toFixed(1)}%`,
-                            isCorrect ? 'success' : 'error'
-                        );
-                        
-                        savePredictions();
-                        AIModel.saveModel();
+                        this.updateDisplay();
+                        this.saveState();
                     }
+                    
+                } catch (error) {
+                    console.error('Lỗi xác minh:', error);
                 }
-                
-                this.currentPhase = 'PREDICTING';
             },
             
-            async phasePredicting() {
-                console.log('🤖 Đang dự đoán phiên tiếp theo...');
-                
-                this.nextSessionToPredict = systemState.currentSessionId + 1;
-                
-                if (systemState.dataCache.length < 5) {
-                    showNotification('⚠️ Không đủ dữ liệu để dự đoán', 'warning');
-                    this.currentPhase = 'RESTING';
+            manualPredict: function() {
+                if (this.sessionData.length < 5) {
+                    this.log('Cần ít nhất 5 phiên để dự đoán', 'warning');
                     return;
                 }
                 
-                updateStatus('predict', 'processing');
-                document.getElementById('aiProcessing').style.display = 'flex';
+                const prediction = this.aiModel.predict(this.sessionData);
+                this.updatePrediction(prediction.result, prediction.confidence, prediction.analysis);
                 
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                const aiResult = AIModel.predict(systemState.dataCache);
-                
-                const prediction = {
-                    id: Date.now(),
-                    prediction: aiResult.result,
-                    confidence: aiResult.confidence,
-                    targetSession: this.nextSessionToPredict,
-                    createdAt: new Date().toISOString(),
-                    verified: false,
-                    actual: null,
-                    correct: null,
-                    aiAnalysis: aiResult.analysis
-                };
-                
-                systemState.predictions.push(prediction);
-                systemState.aiPredictions.push(prediction);
-                
-                updatePredictionBox('ready', prediction.prediction, `${prediction.confidence}%`);
-                updateSessionDisplay();
-                updateAIAnalysis(prediction.aiAnalysis);
-                
-                addHistoryLog(prediction);
-                savePredictions();
-                
-                showNotification(
-                    `🤖 ĐÃ DỰ ĐOÁN: Phiên #${this.nextSessionToPredict} → ${prediction.prediction} (${prediction.confidence}% tin cậy)`,
-                    'info'
-                );
-                
-                document.getElementById('aiProcessing').style.display = 'none';
-                updateStatus('predict', 'waiting');
-                
-                systemState.targetSessionId = this.nextSessionToPredict;
-                updateSessionDisplay();
-                
-                this.currentPhase = 'RESTING';
+                this.log(`Dự đoán thủ công: Phiên #${this.nextSessionId} → ${prediction.result} (${Math.round(prediction.confidence)}%)`, 'info');
             },
             
-            async phaseResting() {
-                console.log('💤 Đang nghỉ giữa chu kỳ...');
-                const restTime = 3;
-                showNotification(`💤 Nghỉ ${restTime}s trước khi kiểm tra tiếp...`, 'warning');
+            trainAI: function() {
+                if (this.sessionData.length < 10) {
+                    this.log('Cần ít nhất 10 phiên để huấn luyện', 'warning');
+                    return;
+                }
                 
-                await new Promise(resolve => setTimeout(resolve, restTime * 1000));
-                this.currentPhase = 'CHECKING';
-            },
-            
-            updatePhaseDisplay: function() {
-                const phase = this.phases[this.currentPhase];
-                document.getElementById('currentPhase').textContent = phase.name;
-                document.getElementById('currentPhase').style.color = phase.color;
-                document.getElementById('cycleCounter').textContent = this.cycleCounter;
+                // Huấn luyện với dữ liệu hiện tại
+                for (let i = 0; i < Math.min(10, this.sessionData.length - 1); i++) {
+                    const session = this.sessionData[i];
+                    const previous = this.sessionData.slice(i + 1, i + 6);
+                    if (previous.length >= 3) {
+                        const pred = this.aiModel.predict(previous);
+                        this.aiAccuracy = this.aiModel.train(session.resultTruyenThong, pred.result);
+                    }
+                }
+                
+                this.aiModel.trainingCount += 5;
+                this.log(`Đã huấn luyện AI thêm 5 epoch. Tổng: ${this.aiModel.trainingCount}`, 'success');
+                this.updateDisplay();
             },
             
             increaseSpeed: function() {
                 if (this.cycleSpeed > 3000) {
                     this.cycleSpeed -= 2000;
+                    
                     if (this.cycleInterval) {
                         clearInterval(this.cycleInterval);
-                        this.cycleInterval = setInterval(() => {
-                            this.runCycle();
-                        }, this.cycleSpeed);
+                        this.cycleInterval = setInterval(() => this.runCycle(), this.cycleSpeed);
                     }
                     
-                    document.getElementById('cycleSpeed').textContent = `${this.cycleSpeed/1000}s`;
-                    showNotification(`🚀 Tăng tốc chu kỳ: ${this.cycleSpeed/1000}s/lần!`, 'info');
+                    this.log(`Đã tăng tốc chu kỳ: ${this.cycleSpeed/1000}s`, 'info');
                 }
-            }
-        };
-
-        // ==================== HỆ THỐNG CHÍNH ====================
-        let systemState = {
-            autoMode: false,
-            currentSessionId: null,
-            lastSessionId: null,
-            targetSessionId: null,
-            isProcessing: false,
-            pollInterval: null,
-            dataCache: [],
-            predictions: [],
-            aiPredictions: [],
-            currentStreak: 0,
-            bestStreak: 0,
-            apiErrorCount: 0
-        };
-
-        // ==================== KHỞI ĐỘNG ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🤖 TAIXIU.AI - Hệ thống AI Tự Động đang khởi động...');
+            },
             
-            AIModel.init();
-            initializeUI();
-            initializeSystem();
-            startPolling();
-        });
-
-        // ==================== KHỞI TẠO UI ====================
-        function initializeUI() {
-            // Nút bật/tắt tự động
-            document.getElementById('autoToggleBtn').addEventListener('click', function() {
-                if (AutoCycleSystem.autoMode) {
-                    AutoCycleSystem.stopAutoCycle();
-                    this.innerHTML = '<i class="fas fa-robot"></i> BẬT TỰ ĐỘNG';
-                    this.className = 'btn btn-success';
-                } else {
-                    AutoCycleSystem.startAutoCycle();
-                    this.innerHTML = '<i class="fas fa-pause"></i> DỪNG TỰ ĐỘNG';
-                    this.className = 'btn btn-danger';
-                }
-            });
-            
-            // Nút tăng tốc
-            document.getElementById('speedUpBtn').addEventListener('click', function() {
-                AutoCycleSystem.increaseSpeed();
-            });
-            
-            // Nút AI dự đoán thủ công
-            document.getElementById('aiPredictBtn').addEventListener('click', function() {
-                if (!AutoCycleSystem.autoMode) {
-                    aiPrediction();
-                } else {
-                    showNotification('Hệ thống đang chạy tự động!', 'warning');
-                }
-            });
-            
-            // Nút huấn luyện AI
-            document.getElementById('trainAiBtn').addEventListener('click', trainAI);
-            
-            // Nút reset
-            document.getElementById('resetBtn').addEventListener('click', resetAI);
-            
-            // Cập nhật thời gian
-            updateClock();
-            setInterval(updateClock, 1000);
-            
-            // Cập nhật AI status
-            updateAIStatus();
-        }
-
-        function updateClock() {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('vi-VN');
-            document.getElementById('predictStatusText').innerHTML = 
-                `<i class="fas fa-clock"></i> ${timeStr}`;
-        }
-
-        function updateAIStatus() {
-            const accuracy = AIModel.currentAccuracy || 0;
-            const statusEl = document.getElementById('aiStatus');
-            const textEl = document.getElementById('aiStatusText');
-            
-            if (accuracy >= 85) {
-                statusEl.className = 'fas fa-circle status-active';
-                textEl.textContent = `AI: ${accuracy.toFixed(1)}%`;
-            } else if (accuracy >= 70) {
-                statusEl.className = 'fas fa-circle status-waiting';
-                textEl.textContent = `AI: ${accuracy.toFixed(1)}%`;
-            } else {
-                statusEl.className = 'fas fa-circle status-ai';
-                textEl.textContent = 'AI: ĐANG HỌC';
-            }
-            
-            document.getElementById('aiConfidence').textContent = `${Math.max(85, Math.min(97, accuracy + 5))}%`;
-        }
-
-        function updateAutoStatus(status) {
-            const statusEl = document.getElementById('autoStatus');
-            const textEl = document.getElementById('autoStatusText');
-            
-            if (status === 'active') {
-                statusEl.className = 'fas fa-circle status-active';
-                textEl.textContent = 'AUTO';
-            } else {
-                statusEl.className = 'fas fa-circle status-inactive';
-                textEl.textContent = 'MANUAL';
-            }
-        }
-
-        // ==================== KHỞI TẠO HỆ THỐNG ====================
-        function initializeSystem() {
-            // Load lịch sử từ localStorage
-            const savedPredictions = localStorage.getItem('ai_predictions');
-            if (savedPredictions) {
-                systemState.predictions = JSON.parse(savedPredictions);
-                updateStatsDisplay();
-            }
-            
-            // Load streak
-            systemState.currentStreak = parseInt(localStorage.getItem('current_streak') || 0);
-            systemState.bestStreak = parseInt(localStorage.getItem('best_streak') || 0);
-            
-            // Hiển thị streak
-            document.getElementById('currentStreak').textContent = systemState.currentStreak;
-            document.getElementById('statStreak').textContent = systemState.currentStreak;
-            
-            // Cập nhật tốc độ
-            document.getElementById('cycleSpeed').textContent = `${AutoCycleSystem.cycleSpeed/1000}s`;
-            
-            // Bắt đầu polling
-            startPolling();
-        }
-
-        // ==================== POLLING TỰ ĐỘNG ====================
-        function startPolling() {
-            if (systemState.pollInterval) {
-                clearInterval(systemState.pollInterval);
-            }
-            
-            // Chỉ polling khi không ở chế độ auto
-            systemState.pollInterval = setInterval(async () => {
-                if (systemState.isProcessing || AutoCycleSystem.autoMode) return;
-                
-                try {
-                    systemState.isProcessing = true;
-                    await checkNewSession();
-                } catch (error) {
-                    console.error('Lỗi polling:', error);
-                    updateStatus('api', 'error');
-                    systemState.apiErrorCount++;
-                } finally {
-                    systemState.isProcessing = false;
-                }
-            }, 8000);
-            
-            setTimeout(() => checkNewSession(), 1000);
-        }
-
-        // ==================== KIỂM TRA PHIÊN MỚI ====================
-        async function checkNewSession() {
-            if (AutoCycleSystem.autoMode) return;
-            
-            updateStatus('api', 'loading');
-            
-            try {
-                const response = await fetch(API_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error('API không phản hồi');
-                
-                const data = await response.json();
-                updateStatus('api', 'active');
-                systemState.apiErrorCount = 0;
-                
-                if (!data.list || data.list.length === 0) {
-                    throw new Error('Dữ liệu API trống');
-                }
-                
-                const latestSession = data.list[0];
-                const latestSessionId = latestSession.id;
-                
-                systemState.dataCache = data.list.slice(0, 20);
-                
-                if (systemState.lastSessionId === null) {
-                    systemState.currentSessionId = latestSessionId;
-                    systemState.lastSessionId = latestSessionId;
-                    systemState.targetSessionId = latestSessionId + 1;
+            resetSystem: function() {
+                if (confirm('RESET toàn bộ hệ thống?')) {
+                    this.stopAuto();
                     
-                    updateSessionDisplay();
-                    showNotification(`AI đã kết nối API. Phiên: #${latestSessionId}`, 'success');
+                    this.currentSessionId = null;
+                    this.nextSessionId = null;
+                    this.lastSessionId = null;
+                    this.cycleCount = 0;
+                    this.aiAccuracy = 0;
+                    this.currentStreak = 0;
+                    this.predictions = [];
                     
-                } else if (latestSessionId > systemState.lastSessionId) {
-                    systemState.lastSessionId = latestSessionId;
-                    checkAIPredictionResult();
-                    systemState.currentSessionId = latestSessionId;
-                    systemState.targetSessionId = latestSessionId + 1;
-                    updateSessionDisplay();
-                    showNotification(`AI phát hiện phiên mới: #${latestSessionId}`, 'info');
+                    this.aiModel = {
+                        weights: { pattern: 0.4, trend: 0.3, stats: 0.2, streak: 0.1 },
+                        history: [],
+                        trainingCount: 0
+                    };
+                    
+                    localStorage.removeItem('wormgpt_state');
+                    
+                    this.updatePrediction('---', 'Hệ thống đã reset', {});
+                    this.log('Đã reset toàn bộ hệ thống', 'warning');
+                    this.updateDisplay();
+                    
+                    document.getElementById('btnAuto').textContent = '🚀 BẬT TỰ ĐỘNG';
+                    document.getElementById('btnAuto').className = 'btn btn-auto';
                 }
+            },
+            
+            // ==================== TIỆN ÍCH ====================
+            updateDisplay: function() {
+                document.getElementById('currentSession').textContent = 
+                    this.currentSessionId ? `#${this.currentSessionId}` : '#---';
+                document.getElementById('nextSession').textContent = 
+                    this.nextSessionId ? `#${this.nextSessionId}` : '#---';
+                document.getElementById('aiAccuracy').textContent = 
+                    `${Math.round(this.aiAccuracy)}%`;
+                document.getElementById('cycleCount').textContent = this.cycleCount;
+                document.getElementById('currentPhase').textContent = 
+                    `TRẠNG THÁI: ${this.getPhaseName(this.currentPhase)}`;
+            },
+            
+            updatePrediction: function(result, confidence, analysis) {
+                document.getElementById('predictionResult').textContent = result;
+                document.getElementById('predictionResult').style.color = 
+                    result === 'TAI' ? 'var(--accent)' : 'var(--secondary)';
+                document.getElementById('aiConfidence').textContent = 
+                    `${Math.round(confidence)}% tin cậy`;
                 
-            } catch (error) {
-                console.error('Lỗi khi kiểm tra phiên:', error);
-                updateStatus('api', 'error');
-                useSampleData();
-            }
-        }
-
-        // ==================== CẬP NHẬT HIỂN THỊ CHU KỲ ====================
-        function updateCycleDisplay() {
-            document.getElementById('cycleCounter').textContent = AutoCycleSystem.cycleCounter;
-            document.getElementById('currentStreak').textContent = systemState.currentStreak;
-        }
-
-        // ==================== CÁC HÀM HỖ TRỢ ====================
-        function aiPrediction() {
-            if (systemState.dataCache.length < 5) {
-                showNotification('AI cần ít nhất 5 phiên để phân tích', 'warning');
-                return;
-            }
+                let analysisText = '';
+                if (analysis.taiRatio) analysisText += `Tài/Xỉu: ${analysis.taiRatio} | `;
+                if (analysis.avgPoint) analysisText += `Điểm TB: ${analysis.avgPoint} | `;
+                if (analysis.modelWeight) analysisText += `AI: ${analysis.modelWeight}`;
+                
+                document.getElementById('aiAnalysis').textContent = analysisText;
+            },
             
-            updateStatus('predict', 'processing');
-            document.getElementById('aiProcessing').style.display = 'flex';
-            
-            setTimeout(() => {
-                const aiResult = AIModel.predict(systemState.dataCache);
-                const prediction = {
-                    id: Date.now(),
-                    prediction: aiResult.result,
-                    confidence: aiResult.confidence,
-                    targetSession: systemState.targetSessionId,
-                    createdAt: new Date().toISOString(),
-                    verified: false,
-                    actual: null,
-                    correct: null,
-                    aiAnalysis: aiResult.analysis
+            getPhaseName: function(phase) {
+                const phases = {
+                    'INIT': 'KHỞI ĐỘNG',
+                    'CHECKING': 'KIỂM TRA PHIÊN',
+                    'PREDICTING': 'AI ĐANG DỰ ĐOÁN',
+                    'VERIFYING': 'XÁC MINH KẾT QUẢ',
+                    'RESTING': 'NGHỈ GIỮA CHU KỲ',
+                    'MANUAL': 'THỦ CÔNG',
+                    'ERROR': 'LỖI'
                 };
-                
-                systemState.predictions.push(prediction);
-                systemState.aiPredictions.push(prediction);
-                
-                updatePredictionBox('ready', prediction.prediction, `${prediction.confidence}%`);
-                updateSessionDisplay();
-                updateAIAnalysis(prediction.aiAnalysis);
-                
-                addHistoryLog(prediction);
-                savePredictions();
-                
-                showNotification(`AI đã dự đoán phiên #${prediction.targetSession}: ${prediction.prediction} (${prediction.confidence}% tin cậy)`, 'info');
-                document.getElementById('aiProcessing').style.display = 'none';
-                updateStatus('predict', 'waiting');
-            }, 1500);
-        }
-
-        function checkAIPredictionResult() {
-            if (systemState.predictions.length === 0) return;
+                return phases[phase] || phase;
+            },
             
-            const lastPrediction = systemState.predictions[systemState.predictions.length - 1];
-            
-            if (lastPrediction.verified === false && lastPrediction.targetSession === systemState.lastSessionId) {
-                const actualSession = systemState.dataCache.find(s => s.id === lastPrediction.targetSession);
+            log: function(message, type = 'info') {
+                const logContainer = document.getElementById('logContainer');
+                const logItem = document.createElement('div');
+                logItem.className = 'log-item';
                 
-                if (actualSession) {
-                    const actualResult = actualSession.resultTruyenThong;
-                    const isCorrect = lastPrediction.prediction === actualResult;
-                    
-                    lastPrediction.actual = actualResult;
-                    lastPrediction.correct = isCorrect;
-                    lastPrediction.verified = true;
-                    lastPrediction.verifiedAt = new Date().toISOString();
-                    
-                    if (isCorrect) {
-                        systemState.currentStreak++;
-                        if (systemState.currentStreak > systemState.bestStreak) {
-                            systemState.bestStreak = systemState.currentStreak;
-                            localStorage.setItem('best_streak', systemState.bestStreak);
-                        }
-                        localStorage.setItem('current_streak', systemState.currentStreak);
-                    } else {
-                        systemState.currentStreak = 0;
-                        localStorage.setItem('current_streak', 0);
-                    }
-                    
-                    AIModel.train(systemState.dataCache, actualResult);
-                    AIModel.predictionHistory.push({
-                        prediction: lastPrediction.prediction,
-                        actual: actualResult,
-                        correct: isCorrect,
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    const newAccuracy = AIModel.updateAccuracy(isCorrect);
-                    updatePredictionBox(isCorrect ? 'correct' : 'incorrect', 
-                                      lastPrediction.prediction, 
-                                      `${lastPrediction.confidence}%`);
-                    
-                    updateStatsDisplay();
-                    updateAIStatus();
-                    addHistoryLog(lastPrediction);
-                    
-                    showNotification(`AI dự đoán phiên #${lastPrediction.targetSession}: ${isCorrect ? 'ĐÚNG' : 'SAI'} (Độ chính xác: ${newAccuracy.toFixed(1)}%)`, 
-                                   isCorrect ? 'success' : 'error');
-                    
-                    savePredictions();
-                    AIModel.saveModel();
-                }
-            }
-        }
-
-        function trainAI() {
-            if (systemState.dataCache.length < 10) {
-                showNotification('Cần ít nhất 10 phiên để huấn luyện AI', 'warning');
-                return;
-            }
-            
-            showNotification('AI đang được huấn luyện với dữ liệu hiện tại...', 'info');
-            document.getElementById('aiProcessing').style.display = 'flex';
-            document.getElementById('aiProcessing').innerHTML = `
-                <div class="processing-dots">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                </div>
-                <span>AI ĐANG HUẤN LUYỆN...</span>
-            `;
-            
-            setTimeout(() => {
-                const recentSessions = systemState.dataCache.slice(0, 15);
-                recentSessions.forEach((session, index) => {
-                    if (index > 0) {
-                        const previousSessions = systemState.dataCache.slice(index, index + 10);
-                        if (previousSessions.length >= 5) {
-                            AIModel.train(previousSessions, session.resultTruyenThong);
-                        }
-                    }
-                });
+                const timestamp = new Date().toLocaleTimeString('vi-VN');
+                const typeColor = {
+                    'success': 'var(--success)',
+                    'error': 'var(--accent)',
+                    'warning': '#ffb547',
+                    'info': 'var(--secondary)'
+                }[type] || 'white';
                 
-                AIModel.trainingEpochs += 5;
-                AIModel.saveModel();
-                document.getElementById('aiProcessing').style.display = 'none';
-                updateAIStatus();
-                showNotification(`AI đã được huấn luyện thêm! Tổng epoch: ${AIModel.trainingEpochs}`, 'success');
-            }, 3000);
-        }
-
-        function resetAI() {
-            if (confirm('RESET toàn bộ hệ thống AI? Toàn bộ dữ liệu huấn luyện sẽ mất!')) {
-                localStorage.removeItem('ai_model');
-                localStorage.removeItem('ai_predictions');
-                localStorage.removeItem('ai_epochs');
-                localStorage.removeItem('ai_accuracy');
-                localStorage.removeItem('ai_best_accuracy');
-                localStorage.removeItem('current_streak');
-                localStorage.removeItem('best_streak');
-                
-                AIModel.init();
-                systemState.predictions = [];
-                systemState.aiPredictions = [];
-                systemState.currentStreak = 0;
-                systemState.bestStreak = 0;
-                systemState.currentSessionId = null;
-                systemState.lastSessionId = null;
-                systemState.targetSessionId = null;
-                
-                AutoCycleSystem.stopAutoCycle();
-                document.getElementById('autoToggleBtn').innerHTML = '<i class="fas fa-robot"></i> BẬT TỰ ĐỘNG';
-                document.getElementById('autoToggleBtn').className = 'btn btn-success';
-                
-                updateSessionDisplay();
-                updateStatsDisplay();
-                updateAIStatus();
-                updateAutoStatus('inactive');
-                
-                document.getElementById('historyLog').innerHTML = `
-                    <div class="log-item">
-                        <span>AI đã được reset và đang học lại từ đầu...</span>
-                        <span class="log-waiting">AI RESET</span>
-                    </div>
+                logItem.innerHTML = `
+                    <span>${timestamp} - ${message}</span>
+                    <span style="color: ${typeColor}">${type.toUpperCase()}</span>
                 `;
                 
-                updatePredictionBox('waiting', '---', 'AI đang khởi động lại...');
-                showNotification('Đã reset toàn bộ hệ thống AI', 'info');
+                logContainer.insertBefore(logItem, logContainer.firstChild);
+                
+                if (logContainer.children.length > 20) {
+                    logContainer.removeChild(logContainer.lastChild);
+                }
+                
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            },
+            
+            useSampleData: function() {
+                this.sessionData = [
+                    {id: 6639160, resultTruyenThong: 'TAI', point: 14},
+                    {id: 6639159, resultTruyenThong: 'XIU', point: 6},
+                    {id: 6639158, resultTruyenThong: 'XIU', point: 10},
+                    {id: 6639157, resultTruyenThong: 'TAI', point: 13},
+                    {id: 6639156, resultTruyenThong: 'XIU', point: 7},
+                    {id: 6639155, resultTruyenThong: 'TAI', point: 14},
+                    {id: 6639154, resultTruyenThong: 'TAI', point: 14},
+                    {id: 6639153, resultTruyenThong: 'XIU', point: 8},
+                    {id: 6639152, resultTruyenThong: 'TAI', point: 15},
+                    {id: 6639151, resultTruyenThong: 'XIU', point: 7}
+                ];
+                
+                if (!this.currentSessionId) {
+                    this.currentSessionId = 6639160;
+                    this.lastSessionId = 6639160;
+                    this.nextSessionId = 6639161;
+                    this.updateDisplay();
+                }
+            },
+            
+            startPolling: function() {
+                setInterval(async () => {
+                    if (!this.autoMode) {
+                        await this.checkNewSession();
+                    }
+                }, 10000);
+            },
+            
+            saveState: function() {
+                const state = {
+                    currentSessionId: this.currentSessionId,
+                    nextSessionId: this.nextSessionId,
+                    lastSessionId: this.lastSessionId,
+                    cycleCount: this.cycleCount,
+                    aiAccuracy: this.aiAccuracy,
+                    currentStreak: this.currentStreak,
+                    bestStreak: this.bestStreak,
+                    predictions: this.predictions.slice(-50),
+                    aiModel: {
+                        weights: this.aiModel.weights,
+                        trainingCount: this.aiModel.trainingCount,
+                        history: this.aiModel.history.slice(-50)
+                    }
+                };
+                
+                localStorage.setItem('wormgpt_state', JSON.stringify(state));
+            },
+            
+            loadState: function() {
+                const saved = localStorage.getItem('wormgpt_state');
+                if (saved) {
+                    try {
+                        const state = JSON.parse(saved);
+                        this.currentSessionId = state.currentSessionId;
+                        this.nextSessionId = state.nextSessionId;
+                        this.lastSessionId = state.lastSessionId;
+                        this.cycleCount = state.cycleCount || 0;
+                        this.aiAccuracy = state.aiAccuracy || 0;
+                        this.currentStreak = state.currentStreak || 0;
+                        this.bestStreak = state.bestStreak || 0;
+                        this.predictions = state.predictions || [];
+                        
+                        if (state.aiModel) {
+                            this.aiModel.weights = state.aiModel.weights || this.aiModel.weights;
+                            this.aiModel.trainingCount = state.aiModel.trainingCount || 0;
+                            this.aiModel.history = state.aiModel.history || [];
+                        }
+                        
+                        this.log('Đã tải trạng thái từ bộ nhớ', 'success');
+                        this.updateDisplay();
+                        
+                    } catch (e) {
+                        console.error('Lỗi load state:', e);
+                    }
+                }
             }
-        }
-
-        function updateSessionDisplay() {
-            document.getElementById('currentSession').textContent = 
-                systemState.currentSessionId ? `#${systemState.currentSessionId}` : '#---';
-            document.getElementById('targetSession').textContent = 
-                systemState.targetSessionId ? `#${systemState.targetSessionId}` : '#---';
-            document.getElementById('lastSession').textContent = 
-                systemState.lastSessionId ? `#${systemState.lastSessionId}` : '#---';
-        }
-
-        function updatePredictionBox(state, result, confidence) {
-            const box = document.getElementById('predictionBox');
-            const resultEl = document.getElementById('resultDisplay');
-            const confidenceEl = document.getElementById('confidenceDisplay');
-            
-            box.className = 'prediction-box ' + state;
-            resultEl.textContent = result;
-            resultEl.className = 'result-display ' + (result === 'TAI' ? 'tai-result' : 'xiu-result');
-            confidenceEl.textContent = `${confidence} tin cậy`;
-            
-            box.style.transform = 'scale(1.05)';
-            setTimeout(() => {
-                box.style.transform = 'scale(1)';
-            }, 300);
-        }
-
-        function updateAIAnalysis(analysis) {
-            const itemsContainer = document.getElementById('analysisItems');
-            itemsContainer.innerHTML = `
-                <div class="analysis-item"><span>Chu kỳ:</span><span>${AutoCycleSystem.cycleCounter}</span></div>
-                <div class="analysis-item"><span>Giai đoạn:</span><span>${AutoCycleSystem.phases[AutoCycleSystem.currentPhase].name}</span></div>
-                <div class="analysis-item"><span>Pattern Recognition:</span><span>${analysis.patternDetected}</span></div>
-                <div class="analysis-item"><span>Confidence Score:</span><span>${analysis.aiConfidence}</span></div>
-                <div class="analysis-item"><span>Current Streak:</span><span>${analysis.currentStreak}</span></div>
-                <div class="analysis-item"><span>Model Performance:</span><span>${analysis.modelPerformance}</span></div>
-            `;
-        }
-
-        function updateStatsDisplay() {
-            const total = systemState.predictions.filter(p => p.verified === true).length;
-            const correct = systemState.predictions.filter(p => p.correct === true).length;
-            const incorrect = systemState.predictions.filter(p => p.correct === false).length;
-            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-            
-            document.getElementById('statCorrect').textContent = correct;
-            document.getElementById('statIncorrect').textContent = incorrect;
-            document.getElementById('statAccuracy').textContent = `${accuracy}%`;
-            document.getElementById('statStreak').textContent = systemState.currentStreak;
-        }
-
-        function addHistoryLog(prediction) {
-            const logContainer = document.getElementById('historyLog');
-            const logItem = document.createElement('div');
-            logItem.className = 'log-item';
-            
-            let statusText = 'CHỜ AI';
-            let statusClass = 'log-waiting';
-            
-            if (prediction.verified === true) {
-                statusText = prediction.correct ? 'AI ĐÚNG' : 'AI SAI';
-                statusClass = prediction.correct ? 'log-correct' : 'log-incorrect';
-            }
-            
-            logItem.innerHTML = `
-                <span>Phiên #${prediction.targetSession}: <strong>${prediction.prediction}</strong> (${prediction.confidence}%)</span>
-                <span class="${statusClass}">${statusText}</span>
-            `;
-            
-            logContainer.insertBefore(logItem, logContainer.firstChild);
-            
-            if (logContainer.children.length > 10) {
-                logContainer.removeChild(logContainer.lastChild);
-            }
-        }
-
-        function updateStatus(type, status) {
-            const apiStatus = document.getElementById('apiStatus');
-            const aiStatus = document.getElementById('aiStatus');
-            const predictStatus = document.getElementById('predictStatus');
-            
-            switch(type) {
-                case 'api':
-                    apiStatus.className = status === 'active' ? 'fas fa-circle status-active' :
-                                         status === 'loading' ? 'fas fa-circle status-waiting' :
-                                         'fas fa-circle status-inactive';
-                    break;
-                    
-                case 'predict':
-                    predictStatus.className = status === 'processing' ? 'fas fa-circle status-ai' :
-                                             status === 'waiting' ? 'fas fa-circle status-waiting' :
-                                             'fas fa-circle status-inactive';
-                    break;
-            }
-        }
-
-        function useSampleData() {
-            systemState.dataCache = [
-                {id: 6639160, resultTruyenThong: 'TAI', dices: [6,4,4], point: 14},
-                {id: 6639159, resultTruyenThong: 'XIU', dices: [1,4,1], point: 6},
-                {id: 6639158, resultTruyenThong: 'XIU', dices: [1,4,5], point: 10},
-                {id: 6639157, resultTruyenThong: 'TAI', dices: [6,2,5], point: 13},
-                {id: 6639156, resultTruyenThong: 'XIU', dices: [3,2,2], point: 7},
-                {id: 6639155, resultTruyenThong: 'TAI', dices: [5,5,4], point: 14},
-                {id: 6639154, resultTruyenThong: 'TAI', dices: [6,3,5], point: 14},
-                {id: 6639153, resultTruyenThong: 'XIU', dices: [2,3,3], point: 8},
-                {id: 6639152, resultTruyenThong: 'TAI', dices: [5,6,4], point: 15},
-                {id: 6639151, resultTruyenThong: 'XIU', dices: [1,2,4], point: 7}
-            ];
-            
-            if (!systemState.currentSessionId) {
-                systemState.currentSessionId = 6639160;
-                systemState.lastSessionId = 6639160;
-                systemState.targetSessionId = 6639161;
-                updateSessionDisplay();
-            }
-        }
-
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                border-radius: 10px;
-                color: white;
-                font-weight: bold;
-                z-index: 10000;
-                animation: slideIn 0.5s ease;
-                max-width: 400px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            `;
-            
-            if (type === 'success') {
-                notification.style.background = 'linear-gradient(90deg, #00b09b, #96c93d)';
-            } else if (type === 'error') {
-                notification.style.background = 'linear-gradient(90deg, #ff416c, #ff4b2b)';
-            } else if (type === 'warning') {
-                notification.style.background = 'linear-gradient(90deg, #f7971e, #ffd200)';
-            } else {
-                notification.style.background = 'linear-gradient(90deg, #9d4edd, #7b2cbf)';
-            }
-            
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 
-                                  type === 'error' ? 'exclamation-circle' : 
-                                  'robot'}"></i>
-                ${message}
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.5s ease';
-                setTimeout(() => notification.remove(), 500);
-            }, 5000);
-        }
-
-        function savePredictions() {
-            localStorage.setItem('ai_predictions', JSON.stringify(systemState.predictions));
-        }
-
+        };
+        
+        // Khởi động hệ thống
+        document.addEventListener('DOMContentLoaded', () => {
+            WormGPT.init();
+        });
+        
         // Thêm CSS animation
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
+            @keyframes pulse {
+                0% { opacity: 0.7; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.02); }
+                100% { opacity: 0.7; transform: scale(1); }
             }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
+            .prediction-box {
+                animation: pulse 3s infinite;
+            }
+            .btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                transition: all 0.3s;
             }
         `;
         document.head.appendChild(style);
